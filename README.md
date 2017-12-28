@@ -27,6 +27,7 @@ etc...
 
 openFrameworks' Examples:
 - [guiExample](https://github.com/openframeworks/openFrameworks/tree/master/examples/gui/guiExample)
+- [colorExample](https://github.com/openframeworks/openFrameworks/tree/master/examples/graphics/colorExample)
 
 ---
 Audio-Visual Coursework  
