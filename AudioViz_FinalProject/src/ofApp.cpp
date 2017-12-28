@@ -8,16 +8,16 @@
  tle004@gold.ac.uk
  
  ----------------
-Audio visualiser with Phyllotaxis and Archimedean Spiral using Maximilian.
+Audio visualiser with Phyllotaxis Spiral and Superformula using Maximilian.
  */
 
 //--------------------------------------------------------------
 void ofApp::setup(){
+    
     ofBackground(0);
     ofEnableSmoothing();
     ofEnableAlphaBlending();
     
-
     //GUI SETUP
     gui.setup();
     gui.add(angleDeg.setup("Angle degree", 137.3, 137.0, 140.0));
@@ -54,6 +54,8 @@ void ofApp::draw(){
         ofDrawBitmapString("'1' to show/hide GUI", 20, 110);
     }
     
+//    easyCam.begin();
+    
     //PHYLLOTAXIS
     ofTranslate(ofGetWidth()/2, ofGetHeight()/2);
     ofRotate(n * rotateDeg);
@@ -64,13 +66,17 @@ void ofApp::draw(){
         float x = r * cos(angle);
         float y = r * sin(angle);
         
+        //Set rainbow colours
         float hue = i + start;
         hue = i/3 % 360;
-        ofColor color = ofColor::fromHsb(hue, 255, 255);
-        ofSetColor(color); //hu, 255, 255
+        ofColor color;
+        color.setHsb(hue, 255, 255);
+        ofSetColor(color);
         
         ofDrawEllipse(x, y, 3, 3);
     }
+    
+//    easyCam.end();
 }
 
 //--------------------------------------------------------------

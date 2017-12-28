@@ -31,14 +31,17 @@ class ofApp : public ofBaseApp{
     ofxPanel gui;
     ofxFloatSlider angleDeg, rotateDeg, scaling;
     
-    //PHYLLOTAXIS
+    //PHYLLOTAXIS SPIRAL
     float angle; //Divergence angle
     float r; //distance between the center of the capitulum and the center of the nth floret
     float n; //ordering number of the a floret, counting outward from the center
     float start = 0;
     
+    //EASYCAM
+    ofEasyCam easyCam;
     
-    //ARCHIMEDIAN SPIRAL
+    //SUPERFORMULA
+    
     
     //MAXIMILIAN
     maxiFFT myFFT;
