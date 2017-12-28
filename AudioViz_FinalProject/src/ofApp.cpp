@@ -1,7 +1,6 @@
 #include "ofApp.h"
 
 /*
-
  Advanced Audio-Visual Processing Coursework
  Final Project: Audio Visualiser
  
@@ -9,23 +8,21 @@
  tle004@gold.ac.uk
  
  ----------------
- An Audio Visualiser with Phyllotaxis and Archimedean spiral usin Maximilian library.
- 
- ----------------
- Credits:
- - Phyllotaxis tutorial: https://www.youtube.com/watch?v=KWoJgHFYWxY
+Audio visualiser with Phyllotaxis and Archimedean Spiral using Maximilian.
  */
 
 //--------------------------------------------------------------
 void ofApp::setup(){
     ofBackground(0);
     ofEnableSmoothing();
+    ofEnableAlphaBlending();
     
+
     //GUI SETUP
     gui.setup();
     gui.add(angleDeg.setup("Angle degree", 137.3, 137.0, 140.0));
     gui.add(rotateDeg.setup("Rotation degree", 0.3, 0.2, 0.5));
-    gui.add(scaling.setup("Scaling", 5, 3, 10));
+    gui.add(scaling.setup("Scaling", 5, 1, 10));
     
     
     // MAXIMILIAN SETUP
@@ -53,6 +50,7 @@ void ofApp::draw(){
     if(displayGui) {
         gui.draw();
         
+        ofSetColor(255);
         ofDrawBitmapString("'1' to show/hide GUI", 20, 110);
     }
     
@@ -66,10 +64,11 @@ void ofApp::draw(){
         float x = r * cos(angle);
         float y = r * sin(angle);
         
-//        float hu = i + start;
-//        hu = i/3 % 360;
+        float hue = i + start;
+        hue = i/3 % 360;
+        ofColor color = ofColor::fromHsb(hue, 255, 255);
+        ofSetColor(color); //hu, 255, 255
         
-        ofSetColor(255); //hu, 255, 255
         ofDrawEllipse(x, y, 3, 3);
     }
 }
