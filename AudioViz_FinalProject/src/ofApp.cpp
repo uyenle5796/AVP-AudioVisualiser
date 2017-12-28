@@ -1,7 +1,7 @@
 #include "ofApp.h"
 
 /*
- 
+
  Advanced Audio-Visual Processing Coursework
  Final Project: Audio Visualiser
  
@@ -21,10 +21,15 @@ void ofApp::setup(){
     ofBackground(0);
     ofEnableSmoothing();
     
-    //MAXIMILIAN SETUP
+    //GUI SETUP
+    gui.setup();
+    gui.add(degree.setup("Angle degree", 137.3, 137.0, 140.0));
+    
+    // MAXIMILIAN SETUP
+    //Setup FFT
     myFFT.setup(fftSize, 512, 256);
     
-    //Load audio from files
+    // Load samples from files
     sample.load(ofToDataPath("/Users/uyenle/Desktop/AudioVisual/AVPCoursework_tle004/AudioViz_FinalProject/bin/data/lemoncreme_piano.wav"));
     
     //Setup the audio output
@@ -41,40 +46,32 @@ void ofApp::update(){
 //--------------------------------------------------------------
 void ofApp::draw(){
     
-//    easyCam.begin();
-    
-    /*** INSTRUCTIONS TEXT ***/
-    if (displayInstructions) {
-        ofDrawBitmapString("1,2,3 to change degree", 20, 20);
-        ofDrawBitmapString("SPACE to pause/play audio", 20, 35);
-        ofDrawBitmapString("A to hide/show instructions", 20, 50);
+    //GUI and INSTRUCTIONS
+    if(displayGui) {
+        gui.draw();
     }
     
-    /**** PHYLLOTAXIS ****/
+    //PHYLLOTAXIS
     ofTranslate(ofGetWidth()/2, ofGetHeight()/2);
     ofRotate(n * 0.3);
     
     for (int i = 0; i < n; i++) {
-        float a = i * degree;
-        float r = c * sqrt(i);
-        float x = r * cos(a);
-        float y = r * sin(a);
+        float angle = i * degree;
+        float radius = c * sqrt(i);
+        float x = radius * cos(angle);
+        float y = radius * sin(angle);
         
         float hu = i + start;
         hu = i/3 % 360;
         
-        ofSetColor(hu, 255, 255);
+        ofSetColor(255); //hu, 255, 255
         ofDrawEllipse(x, y, 3, 3);
     }
-    
-    /**** ARCHIMEDIAN SPIRAL ****/
-    
-//    easyCam.end();
 }
 
 //--------------------------------------------------------------
 void ofApp::audioOut (float *output, int bufferSize, int nChannels) {
-
+    
     for (int i = 0; i < bufferSize; i++) {
         
         if (myFFT.process(sampleOut)) {
@@ -91,21 +88,11 @@ void ofApp::audioOut (float *output, int bufferSize, int nChannels) {
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
     
-    // USER INTERACTIONS
-    
-    //Press 1,2,3 to change Phyllotaxis degree
-    if(key == '1')
-        degree = 137.3;
-    if(key == '2')
-        degree = 137.5;
-    if(key == '3')
-        degree = 137.6;
-    
-    //Press A to hide/show instructions
-    if(key == 'A')
-        displayInstructions = !displayInstructions;
-    
-    //SPACE to pause/play audio
+    //USER INTERACTIONS
+    //G to hide/show Gui
+    if(key == 'G') {
+        displayGui = !displayGui;
+    }
 }
 
 //--------------------------------------------------------------

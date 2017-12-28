@@ -4,8 +4,8 @@
 #include "ofxMaxim.h"
 #include "maximilian.h"
 #include "ofxGui.h"
-
 using namespace std;
+
 
 class ofApp : public ofBaseApp{
 
@@ -13,7 +13,7 @@ class ofApp : public ofBaseApp{
 		void setup();
 		void update();
 		void draw();
-        void audioOut (float *output, int bufferSize, int nChannels);
+        void audioOut(float * input, int bufferSize, int nChannels); //output audio to the speakers
 		void keyPressed(int key);
 		void keyReleased(int key);
 		void mouseMoved(int x, int y );
@@ -27,28 +27,22 @@ class ofApp : public ofBaseApp{
 		void gotMessage(ofMessage msg);
     
     //GUI and INSTRUCTIONS
-    bool displayInstructions = true;
+    bool displayGui = true;
     ofxPanel gui;
-    
-    //EASYCAM
-    ofEasyCam easyCam; //allows looking around
+    ofxFloatSlider degree;
     
     //PHYLLOTAXIS
-    float degree = 137.3;
-    float n;
+//    float degree = 137.3;
+    float n = 0;
     float c = 5;
     float start = 0;
     
-    //ARCHIMEDIAN SPIRAL
     
+    //ARCHIMEDIAN SPIRAL
     
     //MAXIMILIAN
     maxiFFT myFFT;
-    
-    //Audio samples
     maxiSample sample;
-    
-    //Variables
     double sampleOut; //stores the output audio
     int sampleRate = 44100;
     float fftSize = 1024;
