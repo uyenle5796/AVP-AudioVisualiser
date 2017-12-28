@@ -29,12 +29,12 @@ class ofApp : public ofBaseApp{
     //GUI and INSTRUCTIONS
     bool displayGui = true;
     ofxPanel gui;
-    ofxFloatSlider degree;
+    ofxFloatSlider angleDeg, rotateDeg, scaling;
     
     //PHYLLOTAXIS
-//    float degree = 137.3;
-    float n = 0;
-    float c = 5;
+    float angle; //Divergence angle
+    float r; //distance between the center of the capitulum and the center of the nth floret
+    float n; //ordering number of the a floret, counting outward from the center
     float start = 0;
     
     
@@ -47,5 +47,7 @@ class ofApp : public ofBaseApp{
     int sampleRate = 44100;
     float fftSize = 1024;
     int bufferSize = 512;
+    
+    bool playAudio = true;
     
 };

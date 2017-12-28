@@ -23,7 +23,10 @@ void ofApp::setup(){
     
     //GUI SETUP
     gui.setup();
-    gui.add(degree.setup("Angle degree", 137.3, 137.0, 140.0));
+    gui.add(angleDeg.setup("Angle degree", 137.3, 137.0, 140.0));
+    gui.add(rotateDeg.setup("Rotation degree", 0.3, 0.2, 0.5));
+    gui.add(scaling.setup("Scaling", 5, 3, 10));
+    
     
     // MAXIMILIAN SETUP
     //Setup FFT
@@ -39,8 +42,8 @@ void ofApp::setup(){
 
 //--------------------------------------------------------------
 void ofApp::update(){
-    n += 5;
-    start += 5;
+    n += scaling;
+    start += scaling;
 }
 
 //--------------------------------------------------------------
@@ -49,20 +52,22 @@ void ofApp::draw(){
     //GUI and INSTRUCTIONS
     if(displayGui) {
         gui.draw();
+        
+        ofDrawBitmapString("'1' to show/hide GUI", 20, 110);
     }
     
     //PHYLLOTAXIS
     ofTranslate(ofGetWidth()/2, ofGetHeight()/2);
-    ofRotate(n * 0.3);
+    ofRotate(n * rotateDeg);
     
     for (int i = 0; i < n; i++) {
-        float angle = i * degree;
-        float radius = c * sqrt(i);
-        float x = radius * cos(angle);
-        float y = radius * sin(angle);
+        angle = i * angleDeg;
+        r = scaling * sqrt(i);
+        float x = r * cos(angle);
+        float y = r * sin(angle);
         
-        float hu = i + start;
-        hu = i/3 % 360;
+//        float hu = i + start;
+//        hu = i/3 % 360;
         
         ofSetColor(255); //hu, 255, 255
         ofDrawEllipse(x, y, 3, 3);
@@ -89,10 +94,14 @@ void ofApp::audioOut (float *output, int bufferSize, int nChannels) {
 void ofApp::keyPressed(int key){
     
     //USER INTERACTIONS
-    //G to hide/show Gui
-    if(key == 'G') {
+    //1 to hide/show Gui
+    if(key == '1')
         displayGui = !displayGui;
-    }
+
+    //SPACE to pause/play audio
+//    if(key == ' ')
+//        playAudio = !playAudio;
+    
 }
 
 //--------------------------------------------------------------
