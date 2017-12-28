@@ -1,6 +1,10 @@
 #pragma once
 
 #include "ofMain.h"
+#include "ofxMaxim.h"
+#include "maximilian.h"
+
+using namespace std;
 
 class ofApp : public ofBaseApp{
 
@@ -20,5 +24,14 @@ class ofApp : public ofBaseApp{
 		void windowResized(int w, int h);
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
-		
+    
+    //PHYLLOTAXIS
+    float n = 0;
+    float c = 5;
+    float start = 0;
+    
+
+    //ARCHIMEDIAN SPIRAL
+    
+    //MAXIMILIAN
 };
