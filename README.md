@@ -31,6 +31,6 @@ openFrameworks' Examples:
 
 ---
 Audio-Visual Coursework  
-Final Project: Audio Visualiser
+Final Project: Audio Visualiser  
 8 January 2018  
 Goldsmiths, University of London
