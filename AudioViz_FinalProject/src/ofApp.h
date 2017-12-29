@@ -4,6 +4,7 @@
 #include "ofxMaxim.h"
 #include "maximilian.h"
 #include "ofxGui.h"
+
 using namespace std;
 
 
@@ -26,15 +27,16 @@ class ofApp : public ofBaseApp{
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
     
-    //GUI and INSTRUCTIONS
+    /* GUI */
     bool displayGui = true;
     ofxPanel gui;
     ofxFloatSlider angleDeg, rotateDeg, scaling;
     ofxFloatSlider colorVal;
     
-    //EASYCAM
+    /* EASYCAM */
     ofEasyCam easyCam;
     
+    /* VISUALISATION PATTERNS */
     
     //PHYLLOTAXIS SPIRAL
     float angle; //Divergence angle
@@ -44,8 +46,9 @@ class ofApp : public ofBaseApp{
     
     //SUPERFORMULA
     
+
     
-    //MAXIMILIAN
+    /* MAXIMILIAN */
     maxiFFT myFFT;
     maxiSample sample;
     double sampleOut; //stores the output audio

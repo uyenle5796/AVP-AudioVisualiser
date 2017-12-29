@@ -4,6 +4,7 @@
 #include "ofxMaxim.h"
 #include "maximilian.h"
 #include "ofxGui.h"
+#include "ofxMeshUtils.h"
 
 using namespace std;
 
@@ -26,32 +27,35 @@ class ofApp : public ofBaseApp{
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
     
-    //GUI and INSTRUCTIONS
-    bool displayInstructions = true;
+    /* GUI */
+    bool displayGui = true;
     ofxPanel gui;
+    ofxFloatSlider angleDeg, rotateDeg, scaling;
+    ofxFloatSlider colorVal;
     
-    //EASYCAM
-    ofEasyCam easyCam; //allows looking around
+    /* EASYCAM */
+    ofEasyCam easyCam;
     
-    //PHYLLOTAXIS
-    float degree = 137.3;
-    float n;
-    float c = 5;
+    /* VISUALISATION PATTERNS */
+    
+    //PHYLLOTAXIS SPIRAL
+    float angle; //Divergence angle
+    float r; //distance between the center of the capitulum and the center of the nth floret
+    float n; //ordering number of the a floret, counting outward from the center
     float start = 0;
     
-    //ARCHIMEDIAN SPIRAL
+    //SUPERFORMULA
     
     
-    //MAXIMILIAN
+    
+    /* MAXIMILIAN */
     maxiFFT myFFT;
-    
-    //Audio samples
     maxiSample sample;
-    
-    //Variables
     double sampleOut; //stores the output audio
-    int sampleRate = 44100;
+    int sampleRate = 44100; //sampling rate
     float fftSize = 1024;
-    int bufferSize = 512;
+    int bufferSize = 512; //buffersize is Nyquist rate
+    bool playAudio = true;
+    int intensity = 20;
     
 };

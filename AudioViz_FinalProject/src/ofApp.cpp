@@ -17,20 +17,23 @@ void ofApp::setup(){
     ofBackground(0);
     ofEnableSmoothing();
     ofEnableAlphaBlending();
-    ofSetFullscreen(true);
     ofSetVerticalSync(true);
+    ofSetSmoothLighting(true);
+    ofSetFullscreen(false);
     
-    //GUI SETUP
+    /* GUI SETUP */
     gui.setup();
+    
     //Adjust Phyllotaxis parameters
     gui.add(angleDeg.setup("Angle degree", 137.3, 137.0, 140.0));
     gui.add(rotateDeg.setup("Rotation degree", 0.3, 0.2, 0.5));
     gui.add(scaling.setup("Scaling", 8, 1, 10));
+    gui.add(colorVal.setup("Colours", 300, 1, 360)); //Adjust colours
     
-    //Adjust colours
-    gui.add(colorVal.setup("Color Value", 360, 1, 360));
+    //Adjust Superformula parameters
+
     
-    // MAXIMILIAN SETUP
+    /* MAXIMILIAN SETUP */
     //Setup FFT
     myFFT.setup(fftSize, 512, 256);
     
@@ -44,14 +47,20 @@ void ofApp::setup(){
 
 //--------------------------------------------------------------
 void ofApp::update(){
-    n += scaling;
+    
+    /* PHYLLOTAXIS */
+    //Make the shape grow by adding one floret every frame.
+    //However this makes the the program slows down significant when 'n' gets too large. So I added a limit so the shape stops growing at 500 florets to maintain performance.
+    if (n <= 500)
+        n ++;
+//        cout << n << endl;
     start += scaling;
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
     
-    //GUI and INSTRUCTIONS
+    /* GUIs and INSTRUCTIONS */
     if(displayGui) {
         gui.draw();
         
@@ -61,12 +70,19 @@ void ofApp::draw(){
         ofDrawBitmapString("F to exit fullscreen", 20, ofGetHeight()-10);
     }
     
+    //Start EasyCam - allows changing camera point of view
     easyCam.begin();
     
+    glEnable(GL_DEPTH_TEST);
+    
     //PHYLLOTAXIS
+    ofPushMatrix();
     ofRotate(n * rotateDeg);
     
+    //Draw the Phyllotaxis spiral shape using a for loop, where 'n' increments by 5 every frame (in update). This makes the shape grow bigger.
     for (int i = 0; i < n; i++) {
+        
+        //Create the Phyllotaxis pattern based on the mathematical formula
         angle = i * angleDeg;
         r = scaling * sqrt(i);
         float x = r * cos(angle);
@@ -79,16 +95,17 @@ void ofApp::draw(){
         color.setHsb(hue, 255, 255);
         ofSetColor(color);
         
-        //Take amplitudes of the audio sample using FFT and assign it to z values of each floret
+        //Assign amplitudes of the audio sample using FFT and assign it to z values of each floret
         //so that the floret moves in z axis along with the audio amplitudes
         for(int j=0; j < bufferSize; j++) {
-            float z = myFFT.magnitudes[j] * intensity;
+            float z = myFFT.magnitudes[j] * intensity; //scale up the magnitudes by multiplying with a value to make the effect easier to see
             
-            ofDrawEllipse(x, y, z, 3, 3);
+            //ofDrawEllipse(x, y, z, 3, 3);
         }
     }
-    
-    easyCam.end();
+    ofPopMatrix();
+
+    easyCam.end(); //End EasyCam
 }
 
 //--------------------------------------------------------------

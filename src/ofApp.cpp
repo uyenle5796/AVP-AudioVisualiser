@@ -1,7 +1,6 @@
 #include "ofApp.h"
 
 /*
- 
  Advanced Audio-Visual Processing Coursework
  Final Project: Audio Visualiser
  
@@ -9,67 +8,101 @@
  tle004@gold.ac.uk
  
  ----------------
- An Audio Visualiser with Phyllotaxis and Archimedean spiral usin Maximilian library.
- 
- ----------------
- Credits:
- - Phyllotaxis tutorial: https://www.youtube.com/watch?v=KWoJgHFYWxY
+ An Audio Visualiser with Phyllotaxis and Archimedean spiral using Maximilian library.
  */
 
 //--------------------------------------------------------------
 void ofApp::setup(){
     ofBackground(0);
     ofEnableSmoothing();
+    ofEnableAlphaBlending();
+    ofSetVerticalSync(true);
+    //ofSetSmoothLighting(true);
+    ofSetFullscreen(false);
     
-    //MAXIMILIAN SETUP
+    /* GUI SETUP */
+    gui.setup();
+    
+    //Adjust Phyllotaxis parameters
+    gui.add(angleDeg.setup("Angle degree", 137.3, 137.0, 140.0));
+    gui.add(rotateDeg.setup("Rotation degree", 0.3, 0.2, 0.5));
+    gui.add(scaling.setup("Scaling", 8, 1, 10));
+    gui.add(colorVal.setup("Colours", 300, 1, 360)); //Adjust colours
+    
+    //Adjust Superformula parameters
+    
+    
+    /* MAXIMILIAN SETUP */
+    //Setup FFT
     myFFT.setup(fftSize, 512, 256);
     
-    //Load audio from files
+    // Load samples from files
     sample.load(ofToDataPath("/Users/uyenle/Desktop/AudioVisual/AVPCoursework_tle004/AudioViz_FinalProject/bin/data/lemoncreme_piano.wav"));
     
     //Setup the audio output
     ofxMaxiSettings::setup(sampleRate, 2, bufferSize);
-    ofSoundStreamSetup(2,0,this, sampleRate, bufferSize, 4);
+    ofSoundStreamSetup(2, 0, this, sampleRate, bufferSize, 4); /* Call this last ! */
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
-    n += 5;
-    start += 5;
+    /* PHYLLOTAXIS */
+    //Make the shape grow by adding one floret every frame.
+    //However this makes the the program slows down significant when 'n' gets too large. So I added a limit so the shape stops growing at 500 florets to maintain performance.
+    if (n <= 500)
+        n ++;
+    //        cout << n << endl;
+    start += scaling;
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-    
-//    easyCam.begin();
-    
-    /*** INSTRUCTIONS TEXT ***/
-    if (displayInstructions) {
-        ofDrawBitmapString("1,2,3 to change degree", 20, 20);
-        ofDrawBitmapString("SPACE to pause/play audio", 20, 35);
-        ofDrawBitmapString("A to hide/show instructions", 20, 50);
+    /* GUIs and INSTRUCTIONS */
+    if(displayGui) {
+        gui.draw();
+        
+        ofSetColor(255);
+        ofDrawBitmapString("'1' to show/hide GUI", 20, ofGetHeight()-50);
+        ofDrawBitmapString("SPACE to play/pause audio", 20, ofGetHeight()-30);
+        ofDrawBitmapString("F to exit fullscreen", 20, ofGetHeight()-10);
     }
     
-    /**** PHYLLOTAXIS ****/
-    ofTranslate(ofGetWidth()/2, ofGetHeight()/2);
-    ofRotate(n * 0.3);
+    //Start EasyCam - allows changing camera point of view
+    easyCam.begin();
     
+    glEnable(GL_DEPTH_TEST);
+    
+    //PHYLLOTAXIS
+    ofPushMatrix();
+    ofRotate(n * rotateDeg);
+    
+    //Draw the Phyllotaxis spiral shape using a for loop, where 'n' increments by 5 every frame (in update). This makes the shape grow bigger.
     for (int i = 0; i < n; i++) {
-        float a = i * degree;
-        float r = c * sqrt(i);
-        float x = r * cos(a);
-        float y = r * sin(a);
         
-        float hu = i + start;
-        hu = i/3 % 360;
+        //Create the Phyllotaxis pattern based on the mathematical formula
+        angle = i * angleDeg;
+        r = scaling * sqrt(i);
+        float x = r * cos(angle);
+        float y = r * sin(angle);
         
-        ofSetColor(hu, 255, 255);
-        ofDrawEllipse(x, y, 3, 3);
+        //Set rainbow colours
+        ofColor color;
+        float hue = i + start;
+        hue = i % int(colorVal);
+        color.setHsb(hue, 255, 255);
+        ofSetColor(color);
+        
+        //Assign amplitudes of the audio sample using FFT and assign it to z values of each floret
+        //so that the floret moves in z axis along with the audio amplitudes
+        for(int j=0; j < bufferSize; j++) {
+            float z = myFFT.magnitudes[j] * intensity; //scale up the magnitudes by multiplying with a value to make the effect easier to see
+            
+            ofDrawEllipse(x, y, z, 3, 3);
+        }
     }
+    ofPopMatrix();
     
-    /**** ARCHIMEDIAN SPIRAL ****/
-    
-//    easyCam.end();
+    easyCam.end(); //End EasyCam
 }
 
 //--------------------------------------------------------------
@@ -78,12 +111,17 @@ void ofApp::audioOut (float *output, int bufferSize, int nChannels) {
     for (int i = 0; i < bufferSize; i++) {
         
         if (myFFT.process(sampleOut)) {
-            //stuff
+            myFFT.magsToDB(); //get the amplitude in Decibels
         }
         
-        // Assign audioOoutputAudiout to both channels of the speaker
-        output[i*nChannels    ] = sampleOut; //left channel
-        output[i*nChannels + 1] = sampleOut; //right channel
+        //Play the audio sample and store it to sampleOut
+        if (playAudio) {
+            sampleOut = sample.play();
+            
+            // Assign audio output to both channels of the speaker
+            output[i*nChannels    ] = sampleOut; //left channel
+            output[i*nChannels + 1] = sampleOut; //right channel
+        }
         
     }
 }
@@ -92,20 +130,12 @@ void ofApp::audioOut (float *output, int bufferSize, int nChannels) {
 void ofApp::keyPressed(int key){
     
     // USER INTERACTIONS
-    
-    //Press 1,2,3 to change Phyllotaxis degree
     if(key == '1')
-        degree = 137.3;
-    if(key == '2')
-        degree = 137.5;
-    if(key == '3')
-        degree = 137.6;
-    
-    //Press A to hide/show instructions
-    if(key == 'A')
-        displayInstructions = !displayInstructions;
-    
-    //SPACE to pause/play audio
+        displayGui = !displayGui; //1 to hide/show Gui
+    if(key == ' ')
+        playAudio = !playAudio; //SPACE to pause/play audio
+    if(key == 'f')
+        ofSetFullscreen(false); //'f' to exit fullscreen
 }
 
 //--------------------------------------------------------------
