@@ -3,12 +3,12 @@
 /*
  Advanced Audio-Visual Processing Coursework
  Final Project: Audio Visualiser
- 
- by Uyen Le
- tle004@gold.ac.uk
+
+ An Audio Visualiser with Phyllotaxis and Archimedean spiral using Maximilian library.
  
  ----------------
- An Audio Visualiser with Phyllotaxis and Archimedean spiral using Maximilian library.
+ by Uyen Le
+ tle004@gold.ac.uk
  */
 
 //--------------------------------------------------------------
@@ -17,7 +17,7 @@ void ofApp::setup(){
     ofEnableSmoothing();
     ofEnableAlphaBlending();
     ofSetVerticalSync(true);
-    //ofSetSmoothLighting(true);
+    ofSetSmoothLighting(true);
     ofSetFullscreen(false);
     
     /* GUI SETUP */
@@ -46,12 +46,15 @@ void ofApp::setup(){
 
 //--------------------------------------------------------------
 void ofApp::update(){
+    
     /* PHYLLOTAXIS */
     //Make the shape grow by adding one floret every frame.
     //However this makes the the program slows down significant when 'n' gets too large. So I added a limit so the shape stops growing at 500 florets to maintain performance.
     if (n <= 500)
         n ++;
-    //        cout << n << endl;
+    //cout << n << endl;
+    
+    //Increment colours to create rainbow effect
     start += scaling;
 }
 
@@ -62,15 +65,13 @@ void ofApp::draw(){
         gui.draw();
         
         ofSetColor(255);
-        ofDrawBitmapString("'1' to show/hide GUI", 20, ofGetHeight()-50);
+        ofDrawBitmapString("'1' to show/hide in", 20, ofGetHeight()-50);
         ofDrawBitmapString("SPACE to play/pause audio", 20, ofGetHeight()-30);
         ofDrawBitmapString("F to exit fullscreen", 20, ofGetHeight()-10);
     }
     
     //Start EasyCam - allows changing camera point of view
     easyCam.begin();
-    
-    glEnable(GL_DEPTH_TEST);
     
     //PHYLLOTAXIS
     ofPushMatrix();
@@ -116,7 +117,7 @@ void ofApp::audioOut (float *output, int bufferSize, int nChannels) {
         
         //Play the audio sample and store it to sampleOut
         if (playAudio) {
-            sampleOut = sample.play();
+            sampleOut = sample.play(); //replay the sample once it's ended
             
             // Assign audio output to both channels of the speaker
             output[i*nChannels    ] = sampleOut; //left channel
