@@ -17,13 +17,18 @@ void ofApp::setup(){
     ofBackground(0);
     ofEnableSmoothing();
     ofEnableAlphaBlending();
+    ofSetVerticalSync(true);
+    ofSetFrameRate(60);
     
     //GUI SETUP
     gui.setup();
+    //Adjust Phyllotaxis parameters
     gui.add(angleDeg.setup("Angle degree", 137.3, 137.0, 140.0));
     gui.add(rotateDeg.setup("Rotation degree", 0.3, 0.2, 0.5));
     gui.add(scaling.setup("Scaling", 5, 1, 10));
     
+    //Adjust colours
+    gui.add(colorVal.setup("Color Value", 360, 1, 360));
     
     // MAXIMILIAN SETUP
     //Setup FFT
@@ -54,10 +59,9 @@ void ofApp::draw(){
         ofDrawBitmapString("'1' to show/hide GUI", 20, 110);
     }
     
-//    easyCam.begin();
+    easyCam.begin();
     
     //PHYLLOTAXIS
-    ofTranslate(ofGetWidth()/2, ofGetHeight()/2);
     ofRotate(n * rotateDeg);
     
     for (int i = 0; i < n; i++) {
@@ -67,16 +71,22 @@ void ofApp::draw(){
         float y = r * sin(angle);
         
         //Set rainbow colours
-        float hue = i + start;
-        hue = i/3 % 360;
         ofColor color;
+        float hue = i + start;
+        hue = i % int(colorVal);
         color.setHsb(hue, 255, 255);
         ofSetColor(color);
         
-        ofDrawEllipse(x, y, 3, 3);
+        //Take amplitudes of the audio sample using FFT and assign it to z values of each floret
+        //so that the floret moves in z axis along with the audio amplitudes
+        for(int j=0; j < fftSize / 2; j++) {
+            float z = myFFT.magnitudes[j] * intensity;
+            
+            ofDrawEllipse(x, y, z, 3, 3);
+        }
     }
     
-//    easyCam.end();
+    easyCam.end();
 }
 
 //--------------------------------------------------------------
@@ -88,7 +98,10 @@ void ofApp::audioOut (float *output, int bufferSize, int nChannels) {
             //stuff
         }
         
-        // Assign audioOoutputAudiout to both channels of the speaker
+        //Store the audio sample to sampleOut
+        sampleOut = sample.playOnce(); //play the sample once
+        
+        // Assign audio output to both channels of the speaker
         output[i*nChannels    ] = sampleOut; //left channel
         output[i*nChannels + 1] = sampleOut; //right channel
         

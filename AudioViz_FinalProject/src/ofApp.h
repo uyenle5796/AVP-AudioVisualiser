@@ -30,15 +30,17 @@ class ofApp : public ofBaseApp{
     bool displayGui = true;
     ofxPanel gui;
     ofxFloatSlider angleDeg, rotateDeg, scaling;
+    ofxFloatSlider colorVal;
+    
+    //EASYCAM
+    ofEasyCam easyCam;
+    
     
     //PHYLLOTAXIS SPIRAL
     float angle; //Divergence angle
     float r; //distance between the center of the capitulum and the center of the nth floret
     float n; //ordering number of the a floret, counting outward from the center
     float start = 0;
-    
-    //EASYCAM
-    ofEasyCam easyCam;
     
     //SUPERFORMULA
     
@@ -52,5 +54,7 @@ class ofApp : public ofBaseApp{
     int bufferSize = 512;
     
     bool playAudio = true;
+    
+    int intensity = 5;
     
 };
