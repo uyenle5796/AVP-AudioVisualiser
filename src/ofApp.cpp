@@ -183,80 +183,93 @@ void ofApp::draw(){
         gui.draw();
         
         ofSetColor(255);
-        ofDrawBitmapString("'1' to show/hide in", 20, ofGetHeight()-50);
-        ofDrawBitmapString("SPACE to play/pause audio", 20, ofGetHeight()-30);
-        ofDrawBitmapString("F to exit fullscreen", 20, ofGetHeight()-10);
+        ofDrawBitmapString("1,2,3 to change design", 20, ofGetHeight()-70);
+        ofDrawBitmapString("G to show/hide Gui", 20, ofGetHeight()-50);
+        ofDrawBitmapString("F to exit fullscreen", 20, ofGetHeight()-30);
+        ofDrawBitmapString("SPACE to play/pause audio", 20, ofGetHeight()-10);
     }
     
     //Start EasyCam - allows changing camera point of view
     easyCam.begin();
     
     //PHYLLOTAXIS
-    ofPushMatrix();
-    ofRotate(n * rotateDeg);
-    
-    //Draw the Phyllotaxis spiral shape using a for loop, where 'n' increments by 5 every frame (in update). This makes the shape grow bigger.
-    for (int i = 0; i < n; i++) {
+    if(showPhyllotaxis) {
+        ofPushMatrix();
+        ofRotate(n * rotateDeg);
         
-        //Create the Phyllotaxis pattern based on the mathematical formula
-        angle = i * angleDeg;
-        r = scaling * sqrt(i);
-        float x = r * cos(angle);
-        float y = r * sin(angle);
-        
-        //Set rainbow colours
-        ofColor color;
-        float hue = i + start;
-        hue = i % int(colorVal);
-        color.setHsb(hue, 255, 255);
-        ofSetColor(color);
-        
-        //Assign amplitudes of the audio sample using FFT and assign it to z values of each floret
-        //so that the floret moves in z axis along with the audio amplitudes
-        for(int j=0; j < bufferSize; j++) {
-            float z = myFFT.magnitudes[j] * intensity; //scale up the magnitudes by multiplying with a value to make the effect easier to see
+        //Draw the Phyllotaxis spiral shape using a for loop, where 'n' increments by 5 every frame (in update). This makes the shape grow bigger.
+        for (int i = 0; i < n; i++) {
             
-            //ofDrawEllipse(x, y, z, 3, 3);
+            //Create the Phyllotaxis pattern based on the mathematical formula
+            angle = i * angleDeg;
+            r = scaling * sqrt(i);
+            float x = r * cos(angle);
+            float y = r * sin(angle);
+            
+            //Set rainbow colours
+            ofColor color;
+            float hue = i + start;
+            hue = i % int(colorVal);
+            color.setHsb(hue, 255, 255);
+            ofSetColor(color);
+            
+            //Assign amplitudes of the audio sample using FFT and assign it to z values of each floret
+            //so that the floret moves in z axis along with the audio amplitudes
+            for(int j=0; j < bufferSize; j++) {
+                float z = myFFT.magnitudes[j] * intensity; //scale up the magnitudes by multiplying with a value to make the effect easier to see
+                
+                ofDrawEllipse(x, y, z, 3, 3);
+            }
         }
+        ofPopMatrix();
     }
-    ofPopMatrix();
     
     /* SUPERFORMULA */
 //    superformula.draw();
-    ofPushMatrix();
-    glShadeModel(GL_FLAT);
-    glProvokingVertex(GL_FIRST_VERTEX_CONVENTION);
-    
-    if(!drawPoints) {
-        ofDisableAlphaBlending();
-        mesh.setMode(OF_PRIMITIVE_TRIANGLES);
-        glEnable(GL_DEPTH_TEST);
-        ofEnableLighting();
-        light.enable();
-        mesh.draw();
-        light.disable();
-        ofDisableLighting();
-    } else {
-        mesh.setMode(OF_PRIMITIVE_POINTS);
-        glEnable(GL_POINT_SMOOTH);
-        glEnable(GL_PROGRAM_POINT_SIZE_ARB);
-        glPointSize(1.5f); //vertex size
-        mesh.clearColors();
-        ofSetColor(meshColor); //vertex color
-        ofEnableAlphaBlending();
-        ofEnableBlendMode(OF_BLENDMODE_ALPHA);
+    if (showSuperformula) {
+        ofPushMatrix();
+        glShadeModel(GL_FLAT);
+        glProvokingVertex(GL_FIRST_VERTEX_CONVENTION);
         
-        mesh.draw();
-    }
+        if(!drawPoints) {
+            ofDisableAlphaBlending();
+            mesh.setMode(OF_PRIMITIVE_TRIANGLES);
+            glEnable(GL_DEPTH_TEST);
+            ofEnableLighting();
+            light.enable();
+            mesh.draw();
+            light.disable();
+            ofDisableLighting();
+        } else {
+            mesh.setMode(OF_PRIMITIVE_POINTS);
+            glEnable(GL_POINT_SMOOTH);
+            glEnable(GL_PROGRAM_POINT_SIZE_ARB);
+            glPointSize(1.5f); //vertex size
+            mesh.clearColors();
+            
+            //TO DO Set rainbow colours to the vertices
+            int col = 0;
+            col++;
+            float hue = col % 255;
+            ofColor vertexColor;
+            
+            vertexColor.setHsb(hue, 255, 255);
+            ofSetColor(vertexColor); //vertex color
+            ofEnableAlphaBlending();
+            ofEnableBlendMode(OF_BLENDMODE_ALPHA);
+            
+            mesh.draw();
+        }
 
-    if(drawWire) {
-        mesh.setMode(OF_PRIMITIVE_TRIANGLES);
-        mesh.clearColors();
-        ofSetColor(255,255,255,100); //white
-        mesh.drawWireframe();
+        if(drawWire) {
+            mesh.setMode(OF_PRIMITIVE_TRIANGLES);
+            mesh.clearColors();
+            ofSetColor(255,255,255,100); //white
+            mesh.drawWireframe();
+        }
+        glDisable(GL_DEPTH_TEST);
+        ofPopMatrix();
     }
-    glDisable(GL_DEPTH_TEST);
-    ofPopMatrix();
     
     easyCam.end(); //End EasyCam
 }
@@ -286,7 +299,20 @@ void ofApp::audioOut (float *output, int bufferSize, int nChannels) {
 void ofApp::keyPressed(int key){
     
     // USER INTERACTIONS
-    if(key == '1')
+    if(key == '1') {
+        showPhyllotaxis = true; //1 to show Phyllotaxis shape
+        showSuperformula = false;
+    }
+    if(key == '2') {
+        showPhyllotaxis = false; //2 to show Superformula shape
+        showSuperformula = true;
+    }
+//    if(key == '3') {
+//        showPhyllotaxis = false; //3 to show ??? shape
+//        showSuperformula = true;
+//    }
+    
+    if(key == 'g')
         displayGui = !displayGui; //1 to hide/show Gui
     if(key == ' ')
         playAudio = !playAudio; //SPACE to pause/play audio

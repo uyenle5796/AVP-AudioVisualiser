@@ -32,8 +32,9 @@ class ofApp : public ofBaseApp{
     
     /* GUI */
     bool displayGui = true;
-    bool showPhyllotaxis = false;
-    bool showSuperformula = true;
+    bool showPhyllotaxis = true;
+    bool showSuperformula = false;
+    //bool showArchimedianCircle = false;
     
     //Phyllotaxis GUI parameters
     ofxPanel gui;
@@ -50,7 +51,7 @@ class ofApp : public ofBaseApp{
     float n; //ordering number of the a floret, counting outward from the center
     float start = 0;
     
-    //SUPERFORMULA
+    /* SUPERFORMULA */
 //    Superformula superformula;
     ofxFloatSlider a1value, a2value, n1value, n2value, n3value, n4value, numpoints;
     ofxToggle drawWire, drawPoints;
