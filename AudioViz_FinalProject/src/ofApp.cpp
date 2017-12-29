@@ -25,23 +25,12 @@ void ofApp::setup(){
     //Adjust Phyllotaxis parameters
     gui.add(angleDeg.setup("Angle degree", 137.3, 137.0, 140.0));
     gui.add(rotateDeg.setup("Rotation degree", 0.3, 0.2, 0.5));
-    gui.add(scaling.setup("Scaling", 7, 1, 10));
+    gui.add(scaling.setup("Scaling", 8, 1, 10));
     
     //Adjust colours
     gui.add(colorVal.setup("Color Value", 360, 1, 360));
     
     // MAXIMILIAN SETUP
-    //Audio inputs and outputs
-//    lAudioOut = new float[bufferSize];/* outputs */
-//    rAudioOut = new float[bufferSize];
-//    lAudioIn = new float[bufferSize];/* inputs */
-//    rAudioIn = new float[bufferSize];
-//
-//    memset(lAudioOut, 0, bufferSize * sizeof(float));
-//    memset(rAudioOut, 0, bufferSize * sizeof(float));
-//    memset(lAudioIn, 0, bufferSize * sizeof(float));
-//    memset(rAudioIn, 0, bufferSize * sizeof(float));
-    
     //Setup FFT
     myFFT.setup(fftSize, 512, 256);
     
@@ -67,8 +56,9 @@ void ofApp::draw(){
         gui.draw();
         
         ofSetColor(255);
-        ofDrawBitmapString("'1' to show/hide GUI", 20, ofGetHeight()-25);
-        ofDrawBitmapString("SPACE to play/pause audio", 20, ofGetHeight()-10);
+        ofDrawBitmapString("'1' to show/hide GUI", 20, ofGetHeight()-50);
+        ofDrawBitmapString("SPACE to play/pause audio", 20, ofGetHeight()-30);
+        ofDrawBitmapString("F to exit fullscreen", 20, ofGetHeight()-10);
     }
     
     easyCam.begin();
@@ -110,9 +100,9 @@ void ofApp::audioOut (float *output, int bufferSize, int nChannels) {
             myFFT.magsToDB(); //get the amplitude in Decibels
         }
         
-        //Store the audio sample to sampleOut
+        //Play the audio sample and store it to sampleOut
         if (playAudio) {
-            sampleOut = sample.playOnce(); //play the sample once
+            sampleOut = sample.play();
             
             // Assign audio output to both channels of the speaker
             output[i*nChannels    ] = sampleOut; //left channel
@@ -126,14 +116,12 @@ void ofApp::audioOut (float *output, int bufferSize, int nChannels) {
 void ofApp::keyPressed(int key){
     
     //USER INTERACTIONS
-    //1 to hide/show Gui
     if(key == '1')
-        displayGui = !displayGui;
-
-    //SPACE to pause/play audio
+        displayGui = !displayGui; //1 to hide/show Gui
     if(key == ' ')
-        playAudio = !playAudio;
-    
+        playAudio = !playAudio; //SPACE to pause/play audio
+    if(key == 'f')
+        ofSetFullscreen(false); //'f' to exit fullscreen
 }
 
 //--------------------------------------------------------------
