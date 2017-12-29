@@ -4,9 +4,11 @@
 #include "ofxMaxim.h"
 #include "maximilian.h"
 #include "ofxGui.h"
+//#include "Superformula.hpp"
 #include "ofxMeshUtils.h"
 
 using namespace std;
+
 
 class ofApp : public ofBaseApp{
 
@@ -29,24 +31,37 @@ class ofApp : public ofBaseApp{
     
     /* GUI */
     bool displayGui = true;
+    bool showPhyllotaxis = false;
+    bool showSuperformula = true;
+    
+    //Phyllotaxis GUI parameters
     ofxPanel gui;
     ofxFloatSlider angleDeg, rotateDeg, scaling;
     ofxFloatSlider colorVal;
+    
+    //Superformula GUI parameters
+    ofxFloatSlider a1value, a2value;
+    ofxFloatSlider n1value, n2value, n3value, n4value;
+    ofxFloatSlider stepvalue;
+    ofxToggle drawWire, drawPoints;
     
     /* EASYCAM */
     ofEasyCam easyCam;
     
     /* VISUALISATION PATTERNS */
-    
-    //PHYLLOTAXIS SPIRAL
+    //PHYLLOTAXIS
     float angle; //Divergence angle
     float r; //distance between the center of the capitulum and the center of the nth floret
     float n; //ordering number of the a floret, counting outward from the center
     float start = 0;
     
     //SUPERFORMULA
-    
-    
+//    Superformula superformula;
+    float n1target, n2target, n3target, n4target,a1target,a2target;
+    ofMesh mesh;
+    ofVec3f sf3d(float x, float y);
+    vector<int> lastRow;
+    ofLight light;
     
     /* MAXIMILIAN */
     maxiFFT myFFT;
