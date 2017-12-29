@@ -17,20 +17,31 @@ void ofApp::setup(){
     ofBackground(0);
     ofEnableSmoothing();
     ofEnableAlphaBlending();
+    ofSetFullscreen(true);
     ofSetVerticalSync(true);
-    ofSetFrameRate(60);
     
     //GUI SETUP
     gui.setup();
     //Adjust Phyllotaxis parameters
     gui.add(angleDeg.setup("Angle degree", 137.3, 137.0, 140.0));
     gui.add(rotateDeg.setup("Rotation degree", 0.3, 0.2, 0.5));
-    gui.add(scaling.setup("Scaling", 5, 1, 10));
+    gui.add(scaling.setup("Scaling", 7, 1, 10));
     
     //Adjust colours
     gui.add(colorVal.setup("Color Value", 360, 1, 360));
     
     // MAXIMILIAN SETUP
+    //Audio inputs and outputs
+//    lAudioOut = new float[bufferSize];/* outputs */
+//    rAudioOut = new float[bufferSize];
+//    lAudioIn = new float[bufferSize];/* inputs */
+//    rAudioIn = new float[bufferSize];
+//
+//    memset(lAudioOut, 0, bufferSize * sizeof(float));
+//    memset(rAudioOut, 0, bufferSize * sizeof(float));
+//    memset(lAudioIn, 0, bufferSize * sizeof(float));
+//    memset(rAudioIn, 0, bufferSize * sizeof(float));
+    
     //Setup FFT
     myFFT.setup(fftSize, 512, 256);
     
@@ -39,7 +50,7 @@ void ofApp::setup(){
     
     //Setup the audio output
     ofxMaxiSettings::setup(sampleRate, 2, bufferSize);
-    ofSoundStreamSetup(2,0,this, sampleRate, bufferSize, 4);
+    ofSoundStreamSetup(2, 0, this, sampleRate, bufferSize, 4); /* Call this last ! */
 }
 
 //--------------------------------------------------------------
@@ -56,7 +67,8 @@ void ofApp::draw(){
         gui.draw();
         
         ofSetColor(255);
-        ofDrawBitmapString("'1' to show/hide GUI", 20, 110);
+        ofDrawBitmapString("'1' to show/hide GUI", 20, ofGetHeight()-25);
+        ofDrawBitmapString("SPACE to play/pause audio", 20, ofGetHeight()-10);
     }
     
     easyCam.begin();
@@ -79,7 +91,7 @@ void ofApp::draw(){
         
         //Take amplitudes of the audio sample using FFT and assign it to z values of each floret
         //so that the floret moves in z axis along with the audio amplitudes
-        for(int j=0; j < fftSize / 2; j++) {
+        for(int j=0; j < bufferSize; j++) {
             float z = myFFT.magnitudes[j] * intensity;
             
             ofDrawEllipse(x, y, z, 3, 3);
@@ -95,15 +107,17 @@ void ofApp::audioOut (float *output, int bufferSize, int nChannels) {
     for (int i = 0; i < bufferSize; i++) {
         
         if (myFFT.process(sampleOut)) {
-            //stuff
+            myFFT.magsToDB(); //get the amplitude in Decibels
         }
         
         //Store the audio sample to sampleOut
-        sampleOut = sample.playOnce(); //play the sample once
-        
-        // Assign audio output to both channels of the speaker
-        output[i*nChannels    ] = sampleOut; //left channel
-        output[i*nChannels + 1] = sampleOut; //right channel
+        if (playAudio) {
+            sampleOut = sample.playOnce(); //play the sample once
+            
+            // Assign audio output to both channels of the speaker
+            output[i*nChannels    ] = sampleOut; //left channel
+            output[i*nChannels + 1] = sampleOut; //right channel
+        }
         
     }
 }
@@ -117,8 +131,8 @@ void ofApp::keyPressed(int key){
         displayGui = !displayGui;
 
     //SPACE to pause/play audio
-//    if(key == ' ')
-//        playAudio = !playAudio;
+    if(key == ' ')
+        playAudio = !playAudio;
     
 }
 

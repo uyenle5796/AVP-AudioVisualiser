@@ -55,6 +55,12 @@ class ofApp : public ofBaseApp{
     
     bool playAudio = true;
     
-    int intensity = 5;
+    int intensity = 20;
+    
+    //Audio outputs and inputs
+//    float * lAudioOut;
+//    float * rAudioOut;
+//    float * lAudioIn;
+//    float * rAudioIn;
     
 };
