@@ -4,8 +4,9 @@
 #include "ofxMaxim.h"
 #include "maximilian.h"
 #include "ofxGui.h"
-//#include "Superformula.hpp"
 #include "ofxMeshUtils.h"
+//#include "Superformula.hpp"
+//#include "Phyllotaxis.hpp"
 
 using namespace std;
 
@@ -38,13 +39,7 @@ class ofApp : public ofBaseApp{
     ofxPanel gui;
     ofxFloatSlider angleDeg, rotateDeg, scaling;
     ofxFloatSlider colorVal;
-    
-    //Superformula GUI parameters
-    ofxFloatSlider a1value, a2value;
-    ofxFloatSlider n1value, n2value, n3value, n4value;
-    ofxFloatSlider stepvalue;
-    ofxToggle drawWire, drawPoints;
-    
+        
     /* EASYCAM */
     ofEasyCam easyCam;
     
@@ -57,11 +52,16 @@ class ofApp : public ofBaseApp{
     
     //SUPERFORMULA
 //    Superformula superformula;
-    float n1target, n2target, n3target, n4target,a1target,a2target;
+    ofxFloatSlider a1value, a2value, n1value, n2value, n3value, n4value, numpoints;
+    ofxToggle drawWire, drawPoints;
+
     ofMesh mesh;
+    ofLight light;
+    ofColor meshColor, ambientColor, diffuseColor;
     ofVec3f sf3d(float x, float y);
     vector<int> lastRow;
-    ofLight light;
+    float n1target, n2target, n3target, n4target,a1target,a2target;
+    void moveVertices();
     
     /* MAXIMILIAN */
     maxiFFT myFFT;

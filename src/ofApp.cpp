@@ -20,6 +20,21 @@ void ofApp::setup(){
     ofSetSmoothLighting(true);
     ofSetFullscreen(false);
     
+    /* SUPERFORMULA SETUP */
+//    superformula = *new Superformula(ofGetWidth()/2, ofGetHeight()/2, 0);
+//    superformula.setup();
+    light.setDirectional();
+    light.setOrientation(ofVec3f(0,60,60));
+    
+    ambientColor.set(ofRandom(255), ofRandom(255), ofRandom(255));
+    light.setAmbientColor(ambientColor);
+    
+    diffuseColor.set(255,0,0);
+    light.setDiffuseColor(diffuseColor);
+    
+    mesh.enableColors();
+    meshColor.set(ofRandom(255),ofRandom(255),ofRandom(255));
+
     /* GUI SETUP */
     gui.setup();
     
@@ -30,29 +45,16 @@ void ofApp::setup(){
     gui.add(colorVal.setup("Colours", 300, 1, 360)); //Adjust colours
     
     //Superformula parameters
+//    gui.add(superformula.parameters);
     gui.add(a1value.setup("a1value", 1,0,5));
     gui.add(a2value.setup("a2value", 1,0,5));
     gui.add(n1value.setup("n1value", 8,0,40));
     gui.add(n2value.setup("n2value", 1,0,5));
     gui.add(n3value.setup("n3value", 1,0,5));
     gui.add(n4value.setup("n4value", 1,0,5));
-    gui.add(stepvalue.setup("stepvalue", 0.05,0.02,0.9));
+    gui.add(numpoints.setup("numpoints", 0.05,0.02,0.2));
     gui.add(drawWire.setup("Draw Wireframe", false));
     gui.add(drawPoints.setup("Draw Points", false));
-    
-    gui.loadFromFile("Superformula.xml"); //Load XML file which defines parameter values of the shape
-    
-    /* SUPERFORMULA SETUP */
-//    light.setDirectional();
-//    light.setOrientation(ofVec3f(30,60,60));
-    
-    a1target = a1value;
-    a2target = a2value;
-    n1target = n1value;
-    n2target = n2value;
-    n3target = n3value;
-    n4target = n4value;
-
     
     /* MAXIMILIAN SETUP */
     //Setup FFT
@@ -66,40 +68,39 @@ void ofApp::setup(){
     ofSoundStreamSetup(2, 0, this, sampleRate, bufferSize, 4); /* Call this last ! */
 }
 
-//--------------------------------------------------------------
-float moveTowards(float current, float target, float step) {
-    
-    if(abs(current-target) < step) {
-        current = target;
-    } else {
-        if(current > target) {
-            current -= step;
-        } else if(current < target) {
-            current += step;
-        }
-    }
-    return current;
-}
-
-//--------------------------------------------------------------
+//---------------------------------------------------------------------
 ofVec3f ofApp::sf3d(float x, float y) {
     
-    float i = -PI + x*stepvalue;
-    float j = -PI/2.0 + y*stepvalue;
+    float i = -PI + x*numpoints;
+    float j = -PI/2.0 + y*numpoints;
     
     float raux1 = pow(abs(1/a1value*abs(cos(n1value * i/4))),n3value)+pow(abs(1/a2value*abs(sin(n1value*i/4))),n4value);
     
-    float r1=pow(abs(raux1),(-1/n2value));
-    float raux2=pow(abs(1/a1value*abs(cos(n1value*j/4))),n3value)+pow(abs(1/a2value*abs(sin(n1value*j/4))),n4value);
-    float r2=pow(abs(raux2),(-1/n2value));
+    float r1 = pow(abs(raux1),(-1/n2value));
+    float raux2 = pow(abs(1/a1value*abs(cos(n1value*j/4))),n3value)+pow(abs(1/a2value*abs(sin(n1value*j/4))),n4value);
+    float r2 = pow(abs(raux2),(-1/n2value));
     
-    float xx=r1*cos(i)*r2*cos(j)*100.0f;
-    float yy=r1*sin(i)*r2*cos(j)*100.0f;
-    float zz=r2*sin(j)*100.0f;
+    float posx = r1*cos(i)*r2*cos(j)*100.0f;
+    float posy = r1*sin(i)*r2*cos(j)*100.0f;
+    float posz = r2*sin(j)*100.0f;
     
-    return ofVec3f(xx,yy,zz);
+    return ofVec3f(posx, posy, posz);
 }
 
+//---------------------------------------------------------------------
+void ofApp::moveVertices() {
+    int numVerts = mesh.getNumVertices();
+    
+    for (int i=0; i < numVerts; i++) {
+        ofVec3f vert = mesh.getVertex(i);
+        
+        //Move vertices in z axis along with the audio amplitudes
+        for(int j=0; j < bufferSize; j++) {
+            vert.z += myFFT.magnitudes[j];
+        }
+        mesh.setVertex(i, vert);
+    }
+}
 //--------------------------------------------------------------
 void ofApp::update(){
     
@@ -114,19 +115,19 @@ void ofApp::update(){
     start += scaling;
     
     /* SUPERFORMULA */
+//    superformula.update();
     mesh.clear();
-    int N_X = ceil((2.0*PI) / stepvalue);
-    int N_Y = ceil(PI / stepvalue);
+    int N_X = ceil((2.0*PI) / numpoints);
+    int N_Y = ceil(PI / numpoints);
     
     for(int x=0;x<N_X;x++) {
         for(int y=0;y<N_Y;y++) {
             mesh.addVertex(sf3d(x,y));
-            mesh.addColor(ofColor(255,255,255,100));
+            mesh.addColor(ofColor(meshColor));
         }
     }
-    
-    mesh.addVertex(sf3d(PI/stepvalue,PI/stepvalue));
-    mesh.addColor(ofColor(255,30,30));
+    mesh.addVertex(sf3d(PI/numpoints,PI/numpoints));
+    mesh.addColor(ofColor(meshColor));
     
     lastRow.clear();
     
@@ -158,9 +159,9 @@ void ofApp::update(){
                     lastRow.push_back(idx2);
                 }
             }
+            
         }
     }
-    
     int lastVertex = mesh.getNumVertices()-1;
     
     for(int i=0;i<lastRow.size()-1;i++) {
@@ -169,6 +170,8 @@ void ofApp::update(){
     mesh.addTriangle(lastRow[0],lastRow[lastRow.size()-1], lastVertex);
     
     ofxMeshUtils::calcNormals(mesh);
+    
+    moveVertices();
 
 }
 
@@ -219,6 +222,7 @@ void ofApp::draw(){
     ofPopMatrix();
     
     /* SUPERFORMULA */
+//    superformula.draw();
     ofPushMatrix();
     glShadeModel(GL_FLAT);
     glProvokingVertex(GL_FIRST_VERTEX_CONVENTION);
@@ -227,16 +231,18 @@ void ofApp::draw(){
         ofDisableAlphaBlending();
         mesh.setMode(OF_PRIMITIVE_TRIANGLES);
         glEnable(GL_DEPTH_TEST);
-        ofEnableLighting();light.enable();
+        ofEnableLighting();
+        light.enable();
         mesh.draw();
-        light.disable();ofDisableLighting();
+        light.disable();
+        ofDisableLighting();
     } else {
         mesh.setMode(OF_PRIMITIVE_POINTS);
         glEnable(GL_POINT_SMOOTH);
         glEnable(GL_PROGRAM_POINT_SIZE_ARB);
-        glPointSize(0.5f);
+        glPointSize(1.5f); //vertex size
         mesh.clearColors();
-        ofSetColor(255,255,255,100);
+        ofSetColor(meshColor); //vertex color
         ofEnableAlphaBlending();
         ofEnableBlendMode(OF_BLENDMODE_ALPHA);
         
@@ -246,12 +252,12 @@ void ofApp::draw(){
     if(drawWire) {
         mesh.setMode(OF_PRIMITIVE_TRIANGLES);
         mesh.clearColors();
-        ofSetColor(255,255,255,100);
+        ofSetColor(255,255,255,100); //white
         mesh.drawWireframe();
     }
     glDisable(GL_DEPTH_TEST);
     ofPopMatrix();
- 
+    
     easyCam.end(); //End EasyCam
 }
 
@@ -288,6 +294,12 @@ void ofApp::keyPressed(int key){
         ofSetFullscreen(false); //'f' to exit fullscreen
     
 //    superformula.keyPressed(key);
+    
+    if(key == 'r') {
+        meshColor.set(ofRandom(255), ofRandom(255), ofRandom(255));
+        ambientColor.set(ofRandom(255), ofRandom(255), ofRandom(255));
+        diffuseColor.set(ofRandom(255), ofRandom(255), ofRandom(255));
+    }
 }
 
 //--------------------------------------------------------------
