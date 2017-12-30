@@ -4,7 +4,7 @@
  Advanced Audio-Visual Processing Coursework
  Final Project: Audio Visualiser
 
- An Audio Visualiser with Phyllotaxis spiral and Superformula using Maximilian library.
+ An Audio Visualiser with Phyllotaxis, Superformula and Ring shapes.
  
  ----------------
  by Uyen Le
@@ -19,7 +19,7 @@ void ofApp::setup(){
     ofEnableAlphaBlending();
     ofSetVerticalSync(true);
     ofSetSmoothLighting(true);
-    ofSetFullscreen(false);
+    ofSetFullscreen(true);
     
     /* VISUALISERS SETUP */
     superformula = *new Superformula();
@@ -46,7 +46,8 @@ void ofApp::setup(){
     myFFT.setup(fftSize, 512, 256);
     
     // Load samples from files
-    sample.load(ofToDataPath("/Users/uyenle/Desktop/AudioVisual/AVPCoursework_tle004/AudioViz_FinalProject/bin/data/lemoncreme_piano.wav"));
+    pianoSample.load(ofToDataPath("/Users/uyenle/Desktop/AudioVisual/AVPCoursework_tle004/AudioViz_FinalProject/bin/data/lemoncreme_piano.wav"));
+    drumSample.load(ofToDataPath("/Users/uyenle/Desktop/AudioVisual/AVPCoursework_tle004/AudioViz_FinalProject/bin/data/stezzer-102-break.wav"));
     
     //Setup the audio output
     ofxMaxiSettings::setup(sampleRate, 2, bufferSize);
@@ -70,12 +71,6 @@ void ofApp::update(){
             superformula.moveVertices(myFFT.magnitudes[i]);
         }
     }
-    
-    /* RING */
-    if (showRing) {
-        ring.update();
-    }
-    
 }
 
 //--------------------------------------------------------------
@@ -85,11 +80,12 @@ void ofApp::draw(){
     if(displayGui) {
         gui.draw();
         
-        ofSetColor(255);
-        ofDrawBitmapString("1,2,3 to change design", 20, ofGetHeight()-70);
-        ofDrawBitmapString("G to show/hide Gui", 20, ofGetHeight()-50);
-        ofDrawBitmapString("F to exit fullscreen", 20, ofGetHeight()-30);
-        ofDrawBitmapString("SPACE to play/pause audio", 20, ofGetHeight()-10);
+        ofSetColor(255, 200);
+        ofDrawBitmapString("1,2,3: change design", 20, ofGetHeight()-70);
+        ofDrawBitmapString("5,6: change audio", 20, ofGetHeight()-55);
+        ofDrawBitmapString("G: show/hide Gui", 20, ofGetHeight()-40);
+        ofDrawBitmapString("F: exit fullscreen", 20, ofGetHeight()-25);
+        ofDrawBitmapString("SPACE: play/pause audio", 20, ofGetHeight()-10);
     }
     
     //Start EasyCam - allows changing camera point of view
@@ -127,8 +123,11 @@ void ofApp::audioOut (float *output, int bufferSize, int nChannels) {
         
         //Play the audio sample and store it to sampleOut
         if (playAudio) {
-            sampleOut = sample.play(); //replay the sample once it's ended
-            
+            if(playPianoSample)
+                sampleOut = pianoSample.play(); //replay the sample once it's ended
+            if (playDrumSample)
+                sampleOut = drumSample.play();
+
             // Assign audio output to both channels of the speaker
             output[i*nChannels    ] = sampleOut; //left channel
             output[i*nChannels + 1] = sampleOut; //right channel
@@ -164,6 +163,18 @@ void ofApp::keyPressed(int key){
         showSuperformula = false;
     }
     
+    //5 to play pianoSample
+    if(key == '5') {
+        playPianoSample = true;
+        playDrumSample = false;
+    }
+    
+    //6 to play drumSample
+    if(key == '6') {
+        playPianoSample = false;
+        playDrumSample = true;
+    }
+
     //General interactions
     if(key == 'g') displayGui = !displayGui; //'g' to hide/show Gui
     if(key == ' ') playAudio = !playAudio; //SPACE to pause/play audio

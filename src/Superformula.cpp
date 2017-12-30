@@ -65,14 +65,14 @@ ofVec3f Superformula::sf3d(float x, float y) {
 //---------------------------------------------------------------------
 void Superformula::moveVertices(float fftMagnitudes) {
     
-    //Get total number of vertices of the mesh
+    //Get total number of vertices of the mesh (7939)
     int numVerts = mesh.getNumVertices();
-
+    
     for (int i=0; i < numVerts; i++) {
         ofVec3f vert = mesh.getVertex(i);
 
         //Move vertices in z axis along with the audio amplitudes
-        vert.z += fftMagnitudes;
+        vert.z += sin(i) * fftMagnitudes;
         mesh.setVertex(i, vert);
     }
 }
@@ -99,15 +99,7 @@ void Superformula::draw() {
         glEnable(GL_PROGRAM_POINT_SIZE_ARB);
         glPointSize(1.5f); //vertex size
         mesh.clearColors();
-
-        //TO DO Set rainbow colours to the vertices
-        int col = 0;
-        col++;
-        float hue = col % 255;
-        ofColor vertexColor;
-
-        vertexColor.setHsb(hue, 255, 255);
-        ofSetColor(vertexColor); //vertex color
+        ofSetColor(meshColor); //vertex color
         ofEnableAlphaBlending();
         ofEnableBlendMode(OF_BLENDMODE_ALPHA);
 
@@ -189,6 +181,7 @@ void Superformula::update() {
 //--------------------------------------------------------------
 void Superformula::keyPressed(int key) {
     
+    //Randomise mesh colour and lights colour
     if(key == 'r') {
         meshColor.set(ofRandom(255), ofRandom(255), ofRandom(255));
         ambientColor.set(ofRandom(255), ofRandom(255), ofRandom(255));

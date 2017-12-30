@@ -49,12 +49,17 @@ class ofApp : public ofBaseApp{
     
     /* MAXIMILIAN */
     maxiFFT myFFT;
-    maxiSample sample;
+    maxiSample pianoSample, drumSample;
+    
     double sampleOut; //stores the output audio
     int sampleRate = 44100; //sampling rate
     float fftSize = 1024;
     int bufferSize = 512; //buffersize is Nyquist rate
+    
     bool playAudio = true;
-    int intensity = 20;
+    bool playPianoSample = true;
+    bool playDrumSample = false;
     
 };
+
+

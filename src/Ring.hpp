@@ -21,15 +21,14 @@ public:
     
     ofParameterGroup parameters;
     ofParameter<float> radius, spacing, intensity;
-    ofParameter<float> R,G,B;
+    ofParameter<float> R,G,B; //colours
     
     vector<float> points;
-//    float scale = 10;
-    float startColor; //a start value for creating rainbow color
+    float startColor;
     
     void setupGui();
     void draw(float fftMagnitudes);
-    void update();
+    
 };
 
 #endif /* Ring_hpp */

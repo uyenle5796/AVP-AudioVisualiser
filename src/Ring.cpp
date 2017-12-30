@@ -53,9 +53,4 @@ void Ring::draw(float fftMagnitudes) {
     ofPopMatrix();
 }
 
-//--------------------------------------------------------------
-void Ring::update() {
-
-}
-
 
