@@ -4,12 +4,14 @@
 //
 //  Created by Uyen on 29/12/2017.
 //
+//  Adapted from Kamend's Superformula 3D https://github.com/kamend/Superformula3d
 
 #include "Superformula.hpp"
 
 Superformula::Superformula() {
     
     //Setup directional, ambient and diffuse lights
+    //These lights make the shape look shinier and realistic
     light.setDirectional();
     light.setOrientation(ofVec3f(0,60,60));
     
@@ -20,12 +22,14 @@ Superformula::Superformula() {
     light.setDiffuseColor(diffuseColor);
     
     mesh.enableColors();
-    meshColor.set(ofRandom(255),ofRandom(255),ofRandom(255));
+    meshColor.set(ofRandom(255),ofRandom(255),ofRandom(255)); //assign random colours to the shape
 }
 
 //--------------------------------------------------------------
 void Superformula::setupGui() {
     
+    //Setup GUI
+    //Allows controlling 6 parameters of the shape and enable/disable wireframe and points
     parameters.setName("Superformula");
     parameters.add(a1value.set("a1value", 1,0,5));
     parameters.add(a2value.set("a2value", 1,0,5));
@@ -59,6 +63,7 @@ ofVec3f Superformula::sf3d(float x, float y) {
     float posy = r1*sin(i)*r2*cos(j)*100.0f;
     float posz = r2*sin(j)*100.0f;
     
+    //Return a 3d vector with the predefined positions based on the mathematical formula
     return ofVec3f(posx, posy, posz);
 }
 
@@ -71,9 +76,12 @@ void Superformula::moveVertices(float fftMagnitudes) {
     for (int i=0; i < numVerts; i++) {
         ofVec3f vert = mesh.getVertex(i);
 
-        //Move vertices in z axis along with the audio amplitudes
+        //Move vertices in z-axis along with the audio amplitudes
+        //Adding a sinusoid function gives a nice wobbly effect
         vert.z += sin(i) * fftMagnitudes;
-        mesh.setVertex(i, vert);
+        
+        mesh.setVertex(i, vert); //apply the transformation to each vertex of the mesh
+    
     }
 }
 
@@ -81,20 +89,30 @@ void Superformula::moveVertices(float fftMagnitudes) {
 void Superformula::draw() {
 
     ofPushMatrix();
-    glShadeModel(GL_FLAT);
-    glProvokingVertex(GL_FIRST_VERTEX_CONVENTION);
-
+    
+    //GL Flat shading modes
+    glShadeModel(GL_FLAT); //Turn on GL flat shading
+    glProvokingVertex(GL_FIRST_VERTEX_CONVENTION); //specifies the vertex to be used as the source of data for flat shaded varyings
+    //Reference http://docs.gl/gl3/glProvokingVertex
+    
+    /* 3 drawing modes: shaded, points and wireframe */
+    
+    //Draw shaded shape (with random and lighting)
     if(!drawPoints) {
         ofDisableAlphaBlending();
-        mesh.setMode(OF_PRIMITIVE_TRIANGLES);
-        glEnable(GL_DEPTH_TEST);
+        mesh.setMode(OF_PRIMITIVE_TRIANGLES); //mesh is created from many triangles
+        glEnable(GL_DEPTH_TEST); //enable depth testing
+        
+        //Enable and disable lighting on the mesh
         ofEnableLighting();
         light.enable();
         mesh.draw();
         light.disable();
         ofDisableLighting();
-    } else {
-        mesh.setMode(OF_PRIMITIVE_POINTS);
+    }
+    //Draw points (vertices) of the mesh
+    else {
+        mesh.setMode(OF_PRIMITIVE_POINTS); //change ofMesh mode to points
         glEnable(GL_POINT_SMOOTH);
         glEnable(GL_PROGRAM_POINT_SIZE_ARB);
         glPointSize(1.5f); //vertex size
@@ -105,7 +123,8 @@ void Superformula::draw() {
 
         mesh.draw();
     }
-
+    
+    //Draw white wireframe of the mesh
     if(drawWire) {
         mesh.setMode(OF_PRIMITIVE_TRIANGLES);
         mesh.clearColors();
@@ -122,8 +141,8 @@ void Superformula::update() {
     //remove all vertices, colours & indices prevent drawing too many meshes which slows down the program
     mesh.clear();
     
-    int N_X = ceil((2.0*PI) / numpoints); // 2PI/numpoints to +/- number of points around 360 degrees
-    int N_Y = ceil(PI / numpoints); // PI/numpoints to +/- number of points around 180 degrees
+    int N_X = ceil((2.0*PI) / numpoints); // 2PI/numpoints to +/- number of points around 360 degrees in X-axis
+    int N_Y = ceil(PI / numpoints); // PI/numpoints to +/- number of points around 180 degrees in Y-axis
     
     for(int x=0; x < N_X; x++) {
         for(int y=0; y < N_Y; y++) {
@@ -137,13 +156,14 @@ void Superformula::update() {
     
     lastRow.clear();
     
+    /* Create the mesh which is made up of many triangles */
+    
     for(int x=0 ; x < N_X; x++) {
         for(int y=0; y < N_Y-1; y++) {
             
             if(x == N_X-1) {
                 int idx1 = x * N_Y +y;
                 int idx2 = x * N_Y +y+1;
-                
                 int idx3 = y+1;
                 int idx4 = y;
                 
@@ -153,7 +173,6 @@ void Superformula::update() {
             } else {
                 int idx1 = x * N_Y +y;
                 int idx2 = x * N_Y +y+1;
-                
                 int idx3 = (x+1) * N_Y +y+1;
                 int idx4 = (x+1) * N_Y +y;
                 
@@ -181,7 +200,7 @@ void Superformula::update() {
 //--------------------------------------------------------------
 void Superformula::keyPressed(int key) {
     
-    //Randomise mesh colour and lights colour
+    //Press 'r' to randomise mesh colour and lights colour
     if(key == 'r') {
         meshColor.set(ofRandom(255), ofRandom(255), ofRandom(255));
         ambientColor.set(ofRandom(255), ofRandom(255), ofRandom(255));

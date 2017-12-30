@@ -28,16 +28,13 @@ public:
     ofParameter<bool> drawWire, drawPoints;
     ofParameter<ofVec3f> mPosition;
     
-    ofMesh mesh;
-    float n1target, n2target, n3target, n4target, a1target, a2target;
-    float mPosx, mPosy, mPosz;
-    float mAngle;
-    float mSpeed = 0.02;
-    vector<int> lastRow;
-    
     Superformula();
     
+    ofMesh mesh;
+    vector<int> lastRow;
     ofVec3f sf3d(float x, float y);
+    
+    //Functions
     void setupGui();
     void draw();
     void update();
