@@ -19,12 +19,12 @@ void Phyllotaxis::setupGui() {
     parameters.add(angleDeg.set("Angle degree", 137.3, 137.0, 140.0));
     parameters.add(rotateDeg.set("Rotation degree", 0.3, 0.2, 0.5));
     parameters.add(scaling.set("Scaling", 8, 1, 10));
-    parameters.add(colorVal.set("Colours", 300, 1, 360));
+    parameters.add(color.set("Colours", 255, 1, 350));
 }
 
 
 //--------------------------------------------------------------
-void Phyllotaxis::draw(float magnitudes) {
+void Phyllotaxis::draw(float fftMagnitudes) {
 
     ofPushMatrix();
     ofRotate(n * rotateDeg);
@@ -39,18 +39,18 @@ void Phyllotaxis::draw(float magnitudes) {
         float y = r * sin(angle);
         
         //Set rainbow colours
-        ofColor color;
-        float hue = i + start;
-        hue = i % int(colorVal);
-        color.setHsb(hue, 255, 255);
-        ofSetColor(color);
+        ofColor col;
+        float hue = i + startColor;
+        hue = i % int(color);
+        col.setHsb(hue, 255, 255);
+        ofSetColor(col);
         
         //Assign amplitudes of the audio sample using FFT and assign it to z values of each floret
         //so that the floret moves in z axis along with the audio amplitudes
 //        for(int j=0; j < bufferSize; j++) {
-//            float z = magnitudes * intensity; //scale up the magnitudes by multiplying with a value to make the effect easier to see
+//            float zfftMagnitudes = magnitudes * intensity; //scale up the magnitudes by multiplying with a value to make the effect easier to see
 //        }
-        float z = magnitudes * 20; //scale up the magnitudes 20 times to make the effect easier to see
+        float z = fftMagnitudes * 20; //scale up the magnitudes 20 times to make the effect easier to see
         ofDrawEllipse(x, y, z, 3, 3);
     }
     ofPopMatrix();
@@ -65,5 +65,5 @@ void Phyllotaxis::update() {
         n ++;
     
     //Increment colours to create rainbow effect
-    start += scaling;
+    startColor += scaling;
 }

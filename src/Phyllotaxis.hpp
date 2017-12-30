@@ -18,15 +18,15 @@ public:
     
     //Gui stuff
     ofParameterGroup parameters;
-    ofParameter<float> angleDeg, rotateDeg, scaling, colorVal;
+    ofParameter<float> angleDeg, rotateDeg, scaling, color;
     
     float angle; //Divergence angle
     float r; //distance between the center of the capitulum and the center of the nth floret
     float n; //ordering number of the a floret, counting outward from the center
-    float start = 0;
+    float startColor = 0; //a start value for creating rainbow color
     
     void setupGui();
-    void draw(float magnitudes);
+    void draw(float fftMagnitudes);
     void update();
 
     Phyllotaxis();

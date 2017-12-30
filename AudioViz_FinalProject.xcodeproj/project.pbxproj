@@ -13,7 +13,7 @@
 		26C918A18749F3343BAE189D /* ofxButton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED022B158A579C11EC257679 /* ofxButton.cpp */; };
 		3966EAE91FF6C72B009C3354 /* Superformula.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3966EAE71FF6C72B009C3354 /* Superformula.cpp */; };
 		3966EAED1FF6CBA0009C3354 /* Phyllotaxis.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3966EAEB1FF6CBA0009C3354 /* Phyllotaxis.cpp */; };
-		3966EAF11FF78F15009C3354 /* Archimedean.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3966EAEF1FF78F15009C3354 /* Archimedean.cpp */; };
+		3966EAF81FF7A69A009C3354 /* Ring.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3966EAF61FF7A69A009C3354 /* Ring.cpp */; };
 		5F131AC1F6EF4A345D808FB5 /* ofxToggle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DB8A913F1E1D4EE23A143D63 /* ofxToggle.cpp */; };
 		649D70B852DCED4E460097C0 /* maximilian.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB38311EBB353979279949DC /* maximilian.cpp */; };
 		67BC3BC521858C039213B9E2 /* maxiGrains.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C38B7CECCEDE1E4565C00D1C /* maxiGrains.cpp */; };
@@ -73,8 +73,8 @@
 		3966EAE81FF6C72B009C3354 /* Superformula.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Superformula.hpp; sourceTree = "<group>"; };
 		3966EAEB1FF6CBA0009C3354 /* Phyllotaxis.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Phyllotaxis.cpp; sourceTree = "<group>"; };
 		3966EAEC1FF6CBA0009C3354 /* Phyllotaxis.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Phyllotaxis.hpp; sourceTree = "<group>"; };
-		3966EAEF1FF78F15009C3354 /* Archimedean.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Archimedean.cpp; sourceTree = "<group>"; };
-		3966EAF01FF78F15009C3354 /* Archimedean.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Archimedean.hpp; sourceTree = "<group>"; };
+		3966EAF61FF7A69A009C3354 /* Ring.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Ring.cpp; sourceTree = "<group>"; };
+		3966EAF71FF7A69A009C3354 /* Ring.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Ring.hpp; sourceTree = "<group>"; };
 		5BE58FA9DA5F81D80DC10483 /* ofxPanel.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ofxPanel.cpp; path = ../../../../of_v0.9.8_osx_release/addons/ofxGui/src/ofxPanel.cpp; sourceTree = SOURCE_ROOT; };
 		6E6D9269166A05F2717FFDE0 /* ofxGuiGroup.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxGuiGroup.h; path = ../../../../of_v0.9.8_osx_release/addons/ofxGui/src/ofxGuiGroup.h; sourceTree = SOURCE_ROOT; };
 		72154091AE76B163EB279CC1 /* ofxMeshUtils.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxMeshUtils.h; path = src/ofxMeshUtils.h; sourceTree = SOURCE_ROOT; };
@@ -247,8 +247,8 @@
 				3966EAEC1FF6CBA0009C3354 /* Phyllotaxis.hpp */,
 				3966EAE71FF6C72B009C3354 /* Superformula.cpp */,
 				3966EAE81FF6C72B009C3354 /* Superformula.hpp */,
-				3966EAEF1FF78F15009C3354 /* Archimedean.cpp */,
-				3966EAF01FF78F15009C3354 /* Archimedean.hpp */,
+				3966EAF61FF7A69A009C3354 /* Ring.cpp */,
+				3966EAF71FF7A69A009C3354 /* Ring.hpp */,
 				0EDC02B3C29EDB519AFA821C /* ofxMeshUtils.cpp */,
 				72154091AE76B163EB279CC1 /* ofxMeshUtils.h */,
 			);
@@ -364,6 +364,7 @@
 				5F131AC1F6EF4A345D808FB5 /* ofxToggle.cpp in Sources */,
 				8A8DB0CF1961BD567E612B95 /* fft.cpp in Sources */,
 				206563C67C8E6571292487D0 /* maxiAtoms.cpp in Sources */,
+				3966EAF81FF7A69A009C3354 /* Ring.cpp in Sources */,
 				1474D9AFDB50118A7AD7D896 /* maxiBark.cpp in Sources */,
 				D075B1C6BEDE8EAADF46DED5 /* maxiFFT.cpp in Sources */,
 				3966EAED1FF6CBA0009C3354 /* Phyllotaxis.cpp in Sources */,
@@ -372,7 +373,6 @@
 				649D70B852DCED4E460097C0 /* maximilian.cpp in Sources */,
 				3966EAE91FF6C72B009C3354 /* Superformula.cpp in Sources */,
 				7871178CCF2D688F51416FFF /* stb_vorbis.c in Sources */,
-				3966EAF11FF78F15009C3354 /* Archimedean.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -24,7 +24,7 @@ void ofApp::setup(){
     /* VISUALISERS SETUP */
     superformula = *new Superformula();
     phyllotaxis = *new Phyllotaxis();
-    archimedean = *new Archimedean();
+    ring = *new Ring();
 
     /* GUI SETUP */
     gui.setup();
@@ -36,10 +36,11 @@ void ofApp::setup(){
     //Superformula GUI
     superformula.setupGui();
     gui.add(superformula.parameters);
+
+    //Ring GUI
+    ring.setupGui();
+    gui.add(ring.parameters);
     
-//    gui.setup(phyllotaxisParams);
-//    gui.add(superformula.parameters); //Superformula GUI
-//
     /* MAXIMILIAN SETUP */
     //Setup FFT
     myFFT.setup(fftSize, 512, 256);
@@ -69,6 +70,12 @@ void ofApp::update(){
             superformula.moveVertices(myFFT.magnitudes[i]);
         }
     }
+    
+    /* RING */
+    if (showRing) {
+        ring.update();
+    }
+    
 }
 
 //--------------------------------------------------------------
@@ -88,7 +95,7 @@ void ofApp::draw(){
     //Start EasyCam - allows changing camera point of view
     easyCam.begin();
     
-    //PHYLLOTAXIS
+    /* PHYLLOTAXIS */
     if(showPhyllotaxis) {
         for(int i=0; i < bufferSize; i++) {
             phyllotaxis.draw(myFFT.magnitudes[i]);
@@ -96,8 +103,14 @@ void ofApp::draw(){
     }
     
     /* SUPERFORMULA */
-    if (showSuperformula) {
+    if (showSuperformula)
         superformula.draw();
+    
+    /* RING */
+    if (showRing) {
+        for(int i=0; i < bufferSize; i++) {
+            ring.draw(myFFT.magnitudes[i]);
+        }
     }
     
     easyCam.end(); //End EasyCam
@@ -133,20 +146,20 @@ void ofApp::keyPressed(int key){
     if(key == '1') {
         showPhyllotaxis = true;
         showSuperformula = false;
-        showArchimedianCircle = false;
+        showRing = false;
     }
     
      //2 to show Superformula shape
     if(key == '2') {
         showSuperformula = true;
         showPhyllotaxis = false;
-        showArchimedianCircle = false;
+        showRing = false;
     }
     superformula.keyPressed(key); //Use Superformula key interactions
     
-    //3 to show Archimedian spiral
+    //3 to show Ring shape
     if(key == '3') {
-        showArchimedianCircle = true;
+        showRing = true;
         showPhyllotaxis = false;
         showSuperformula = false;
     }

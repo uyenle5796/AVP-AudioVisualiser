@@ -7,7 +7,7 @@
 #include "ofxMeshUtils.h"
 #include "Phyllotaxis.hpp"
 #include "Superformula.hpp"
-#include "Archimedean.hpp"
+#include "Ring.hpp"
 
 
 using namespace std;
@@ -40,12 +40,12 @@ class ofApp : public ofBaseApp{
     bool displayGui = true;
     bool showPhyllotaxis = true;
     bool showSuperformula = false;
-    bool showArchimedianCircle = false;
+    bool showRing = false;
     
     /* VISUALISERS */
     Phyllotaxis phyllotaxis;
     Superformula superformula;
-    Archimedean archimedean;
+    Ring ring;
     
     /* MAXIMILIAN */
     maxiFFT myFFT;
