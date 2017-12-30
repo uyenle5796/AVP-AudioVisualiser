@@ -24,7 +24,7 @@ public:
     //GUI stuff
     ofParameterGroup parameters;
     ofParameter<float> a1value, a2value, n1value, n2value, n3value, n4value;
-    ofParameter<float> numpoints, oscillation, speed;
+    ofParameter<float> numpoints, speed;
     ofParameter<bool> drawWire, drawPoints;
     ofParameter<ofVec3f> mPosition;
     
@@ -35,12 +35,12 @@ public:
     float mSpeed = 0.02;
     vector<int> lastRow;
     
-    Superformula(float posx, float posy, float posz);
+    Superformula();
     
     ofVec3f sf3d(float x, float y);
-    void setup();
     void draw();
     void update();
+    void moveVertices(float fftMagnitudes);
     void keyPressed(int key);
 };
 

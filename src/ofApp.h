@@ -5,8 +5,8 @@
 #include "maximilian.h"
 #include "ofxGui.h"
 #include "ofxMeshUtils.h"
-//#include "Superformula.hpp"
-//#include "Phyllotaxis.hpp"
+#include "Superformula.hpp"
+#include "Phyllotaxis.hpp"
 
 using namespace std;
 
@@ -31,38 +31,19 @@ class ofApp : public ofBaseApp{
 		void gotMessage(ofMessage msg);
     
     /* GUI */
+    ofxPanel gui;
     bool displayGui = true;
     bool showPhyllotaxis = true;
     bool showSuperformula = false;
     //bool showArchimedianCircle = false;
-    
-    //Phyllotaxis GUI parameters
-    ofxPanel gui;
-    ofxFloatSlider angleDeg, rotateDeg, scaling;
-    ofxFloatSlider colorVal;
-        
+
     /* EASYCAM */
     ofEasyCam easyCam;
     
-    /* VISUALISATION PATTERNS */
-    //PHYLLOTAXIS
-    float angle; //Divergence angle
-    float r; //distance between the center of the capitulum and the center of the nth floret
-    float n; //ordering number of the a floret, counting outward from the center
-    float start = 0;
+    /* VISUALISERS */
+    Phyllotaxis phyllotaxis;
+    Superformula superformula;
     
-    /* SUPERFORMULA */
-//    Superformula superformula;
-    ofxFloatSlider a1value, a2value, n1value, n2value, n3value, n4value, numpoints;
-    ofxToggle drawWire, drawPoints;
-
-    ofMesh mesh;
-    ofLight light;
-    ofColor meshColor, ambientColor, diffuseColor;
-    ofVec3f sf3d(float x, float y);
-    vector<int> lastRow;
-    float n1target, n2target, n3target, n4target,a1target,a2target;
-    void moveVertices();
     
     /* MAXIMILIAN */
     maxiFFT myFFT;

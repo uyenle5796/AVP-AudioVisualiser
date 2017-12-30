@@ -18,19 +18,17 @@ public:
     
     //Gui stuff
     ofParameterGroup parameters;
-    ofxFloatSlider angleDeg, rotateDeg, scaling;
-    ofxFloatSlider colorVal;
+    ofParameter<float> angleDeg, rotateDeg, scaling, colorVal;
     
     float angle; //Divergence angle
     float r; //distance between the center of the capitulum and the center of the nth floret
     float n; //ordering number of the a floret, counting outward from the center
     float start = 0;
-    int intensity = 20;
     
-    void setup();
-    void draw();
+    void draw(float magnitudes);
     void update();
 
+    Phyllotaxis();
     
 };
 

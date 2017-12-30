@@ -7,7 +7,19 @@
 
 #include "Superformula.hpp"
 
-Superformula::Superformula(float posx, float posy, float posz): mPosx(posx), mPosy(posy), mPosz(posz) {
+Superformula::Superformula() {
+    
+    //Setup GUI
+    parameters.setName("Superformula");
+    parameters.add(a1value.set("a1value", 1,0,5));
+    parameters.add(a2value.set("a2value", 1,0,5));
+    parameters.add(n1value.set("n1value", 8,0,40));
+    parameters.add(n2value.set("n2value", 1,0,5));
+    parameters.add(n3value.set("n3value", 1,0,5));
+    parameters.add(n4value.set("n4value", 1,0,5));
+    parameters.add(numpoints.set("numpoints", 0.05,0.02,0.2));
+    parameters.add(drawWire.set("Draw Wireframe", false));
+    parameters.add(drawPoints.set("Draw Points", false));
     
     //Setup directional, ambient and diffuse lights
     light.setDirectional();
@@ -21,21 +33,6 @@ Superformula::Superformula(float posx, float posy, float posz): mPosx(posx), mPo
     
     mesh.enableColors();
     meshColor.set(ofRandom(255),ofRandom(255),ofRandom(255));
-}
-
-//--------------------------------------------------------------
-void Superformula::setup() {
-
-    parameters.add(a1value.set("a1value", 1,0,5)); //name, value, min, max
-    parameters.add(a2value.set("a2value", 1,0,5));
-    parameters.add(n1value.set("n1value", 8,0,40));
-    parameters.add(n2value.set("n2value", 1,0,5));
-    parameters.add(n3value.set("n3value", 1,0,5));
-    parameters.add(n4value.set("n4value", 1,0,5));
-    parameters.add(numpoints.set("Number of Points", 0.05,0.02,0.9));
-    parameters.add(speed.set("Speed", 10, 0, 20));
-    parameters.add(drawWire.set("Draw Wireframe", true));
-    parameters.add(drawPoints.set("Draw Points", true));
 }
 
 //--------------------------------------------------------------
@@ -62,39 +59,62 @@ ofVec3f Superformula::sf3d(float x, float y) {
     return ofVec3f(posx, posy, posz);
 }
 
+//---------------------------------------------------------------------
+void Superformula::moveVertices(float fftMagnitudes) {
+    
+    //Get total number of vertices of the mesh
+    int numVerts = mesh.getNumVertices();
+
+    for (int i=0; i < numVerts; i++) {
+        ofVec3f vert = mesh.getVertex(i);
+
+        //Move vertices in z axis along with the audio amplitudes
+        vert.z += fftMagnitudes;
+        mesh.setVertex(i, vert);
+    }
+}
+
 //--------------------------------------------------------------
 void Superformula::draw() {
 
     ofPushMatrix();
-    ofTranslate(mPosx-300, mPosy, mPosz);
-    
     glShadeModel(GL_FLAT);
     glProvokingVertex(GL_FIRST_VERTEX_CONVENTION);
-    
+
     if(!drawPoints) {
         ofDisableAlphaBlending();
         mesh.setMode(OF_PRIMITIVE_TRIANGLES);
         glEnable(GL_DEPTH_TEST);
-        ofEnableLighting();light.enable();
+        ofEnableLighting();
+        light.enable();
         mesh.draw();
-        light.disable();ofDisableLighting();
+        light.disable();
+        ofDisableLighting();
     } else {
         mesh.setMode(OF_PRIMITIVE_POINTS);
         glEnable(GL_POINT_SMOOTH);
         glEnable(GL_PROGRAM_POINT_SIZE_ARB);
-        glPointSize(0.5f);
+        glPointSize(1.5f); //vertex size
         mesh.clearColors();
-        ofSetColor(255,255,255,100);
+
+        //TO DO Set rainbow colours to the vertices
+        int col = 0;
+        col++;
+        float hue = col % 255;
+        ofColor vertexColor;
+
+        vertexColor.setHsb(hue, 255, 255);
+        ofSetColor(vertexColor); //vertex color
         ofEnableAlphaBlending();
         ofEnableBlendMode(OF_BLENDMODE_ALPHA);
-        
+
         mesh.draw();
     }
-    
+
     if(drawWire) {
         mesh.setMode(OF_PRIMITIVE_TRIANGLES);
         mesh.clearColors();
-        ofSetColor(255,255,255,100);
+        ofSetColor(255,255,255,100); //white
         mesh.drawWireframe();
     }
     glDisable(GL_DEPTH_TEST);
@@ -104,29 +124,30 @@ void Superformula::draw() {
 //--------------------------------------------------------------
 void Superformula::update() {
     
+    //remove all vertices, colours & indices prevent drawing too many meshes which slows down the program
     mesh.clear();
-    int N_X = ceil((2.0*PI) / numpoints);
-    int N_Y = ceil(PI / numpoints);
     
-    for(int x=0;x<N_X;x++) {
-        for(int y=0;y<N_Y;y++) {
+    int N_X = ceil((2.0*PI) / numpoints); // 2PI/numpoints to +/- number of points around 360 degrees
+    int N_Y = ceil(PI / numpoints); // PI/numpoints to +/- number of points around 180 degrees
+    
+    for(int x=0; x < N_X; x++) {
+        for(int y=0; y < N_Y; y++) {
             mesh.addVertex(sf3d(x,y));
-            mesh.addColor(ofColor(255,255,255,100));
+            mesh.addColor(meshColor);
         }
     }
     
-    mesh.addVertex(sf3d(PI/numpoints,PI/numpoints));
-    mesh.addColor(ofColor(255,30,30));
+    mesh.addVertex(sf3d(PI/numpoints, PI/numpoints));
+    mesh.addColor(meshColor);
     
     lastRow.clear();
     
-    for(int x=0;x<N_X;x++) {
-        for(int y=0;y<N_Y-1;y++) {
+    for(int x=0 ; x < N_X; x++) {
+        for(int y=0; y < N_Y-1; y++) {
             
             if(x == N_X-1) {
-                
-                int idx1 = x*N_Y+y;
-                int idx2 = x*N_Y+y+1;
+                int idx1 = x * N_Y +y;
+                int idx2 = x * N_Y +y+1;
                 
                 int idx3 = y+1;
                 int idx4 = y;
@@ -135,11 +156,11 @@ void Superformula::update() {
                 mesh.addTriangle(idx1, idx3, idx4);
                 
             } else {
-                int idx1 = x*N_Y+y;
-                int idx2 = x*N_Y+y+1;
+                int idx1 = x * N_Y +y;
+                int idx2 = x * N_Y +y+1;
                 
-                int idx3 = (x+1)*N_Y+y+1;
-                int idx4 = (x+1)*N_Y+y;
+                int idx3 = (x+1) * N_Y +y+1;
+                int idx4 = (x+1) * N_Y +y;
                 
                 mesh.addTriangle(idx1, idx2, idx3);
                 mesh.addTriangle(idx1, idx3, idx4);
@@ -153,15 +174,21 @@ void Superformula::update() {
     
     int lastVertex = mesh.getNumVertices()-1;
     
-    for(int i=0;i<lastRow.size()-1;i++) {
+    for(int i=0; i<lastRow.size()-1; i++) {
         mesh.addTriangle(lastRow[i], lastRow[i+1], lastVertex);
     }
     mesh.addTriangle(lastRow[0],lastRow[lastRow.size()-1], lastVertex);
     
     ofxMeshUtils::calcNormals(mesh);
+
 }
 
 //--------------------------------------------------------------
 void Superformula::keyPressed(int key) {
     
+    if(key == 'r') {
+        meshColor.set(ofRandom(255), ofRandom(255), ofRandom(255));
+        ambientColor.set(ofRandom(255), ofRandom(255), ofRandom(255));
+        diffuseColor.set(ofRandom(255), ofRandom(255), ofRandom(255));
+    }
 }

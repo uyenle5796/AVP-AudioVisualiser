@@ -20,41 +20,14 @@ void ofApp::setup(){
     ofSetSmoothLighting(true);
     ofSetFullscreen(false);
     
-    /* SUPERFORMULA SETUP */
-//    superformula = *new Superformula(ofGetWidth()/2, ofGetHeight()/2, 0);
-//    superformula.setup();
-    light.setDirectional();
-    light.setOrientation(ofVec3f(0,60,60));
-    
-    ambientColor.set(ofRandom(255), ofRandom(255), ofRandom(255));
-    light.setAmbientColor(ambientColor);
-    
-    diffuseColor.set(255,0,0);
-    light.setDiffuseColor(diffuseColor);
-    
-    mesh.enableColors();
-    meshColor.set(ofRandom(255),ofRandom(255),ofRandom(255));
+    /* VISUALISERS SETUP */
+    superformula = *new Superformula();
+    phyllotaxis = *new Phyllotaxis();
 
     /* GUI SETUP */
     gui.setup();
-    
-    //Phyllotaxis parameters
-    gui.add(angleDeg.setup("Angle degree", 137.3, 137.0, 140.0));
-    gui.add(rotateDeg.setup("Rotation degree", 0.3, 0.2, 0.5));
-    gui.add(scaling.setup("Scaling", 8, 1, 10));
-    gui.add(colorVal.setup("Colours", 300, 1, 360)); //Adjust colours
-    
-    //Superformula parameters
-//    gui.add(superformula.parameters);
-    gui.add(a1value.setup("a1value", 1,0,5));
-    gui.add(a2value.setup("a2value", 1,0,5));
-    gui.add(n1value.setup("n1value", 8,0,40));
-    gui.add(n2value.setup("n2value", 1,0,5));
-    gui.add(n3value.setup("n3value", 1,0,5));
-    gui.add(n4value.setup("n4value", 1,0,5));
-    gui.add(numpoints.setup("numpoints", 0.05,0.02,0.2));
-    gui.add(drawWire.setup("Draw Wireframe", false));
-    gui.add(drawPoints.setup("Draw Points", false));
+    gui.add(phyllotaxis.parameters); //Phyllotaxis GUI
+    gui.add(superformula.parameters); //Superformula GUI
     
     /* MAXIMILIAN SETUP */
     //Setup FFT
@@ -68,111 +41,23 @@ void ofApp::setup(){
     ofSoundStreamSetup(2, 0, this, sampleRate, bufferSize, 4); /* Call this last ! */
 }
 
-//---------------------------------------------------------------------
-ofVec3f ofApp::sf3d(float x, float y) {
-    
-    float i = -PI + x*numpoints;
-    float j = -PI/2.0 + y*numpoints;
-    
-    float raux1 = pow(abs(1/a1value*abs(cos(n1value * i/4))),n3value)+pow(abs(1/a2value*abs(sin(n1value*i/4))),n4value);
-    
-    float r1 = pow(abs(raux1),(-1/n2value));
-    float raux2 = pow(abs(1/a1value*abs(cos(n1value*j/4))),n3value)+pow(abs(1/a2value*abs(sin(n1value*j/4))),n4value);
-    float r2 = pow(abs(raux2),(-1/n2value));
-    
-    float posx = r1*cos(i)*r2*cos(j)*100.0f;
-    float posy = r1*sin(i)*r2*cos(j)*100.0f;
-    float posz = r2*sin(j)*100.0f;
-    
-    return ofVec3f(posx, posy, posz);
-}
-
-//---------------------------------------------------------------------
-void ofApp::moveVertices() {
-    int numVerts = mesh.getNumVertices();
-    
-    for (int i=0; i < numVerts; i++) {
-        ofVec3f vert = mesh.getVertex(i);
-        
-        //Move vertices in z axis along with the audio amplitudes
-        for(int j=0; j < bufferSize; j++) {
-            vert.z += myFFT.magnitudes[j];
-        }
-        mesh.setVertex(i, vert);
-    }
-}
 //--------------------------------------------------------------
 void ofApp::update(){
     
     /* PHYLLOTAXIS */
-    //Make the shape grow by adding one floret every frame.
-    //However this makes the the program slows down significant when 'n' gets too large. So I added a limit so the shape stops growing at 500 florets to maintain performance.
-    if (n <= 500)
-        n ++;
-    //cout << n << endl;
-    
-    //Increment colours to create rainbow effect
-    start += scaling;
+    if (showPhyllotaxis) {
+        phyllotaxis.update();
+    }
     
     /* SUPERFORMULA */
-//    superformula.update();
-    mesh.clear();
-    int N_X = ceil((2.0*PI) / numpoints);
-    int N_Y = ceil(PI / numpoints);
-    
-    for(int x=0;x<N_X;x++) {
-        for(int y=0;y<N_Y;y++) {
-            mesh.addVertex(sf3d(x,y));
-            mesh.addColor(ofColor(meshColor));
+    if (showSuperformula) {
+        superformula.update();
+        
+        //Move each vertex in z axis along with the audio amplitudes
+        for(int i=0; i < bufferSize; i++) {
+            superformula.moveVertices(myFFT.magnitudes[i]);
         }
     }
-    mesh.addVertex(sf3d(PI/numpoints,PI/numpoints));
-    mesh.addColor(ofColor(meshColor));
-    
-    lastRow.clear();
-    
-    for(int x=0;x<N_X;x++) {
-        for(int y=0;y<N_Y-1;y++) {
-            
-            if(x == N_X-1) {
-                
-                int idx1 = x*N_Y+y;
-                int idx2 = x*N_Y+y+1;
-                
-                int idx3 = y+1;
-                int idx4 = y;
-                
-                mesh.addTriangle(idx1, idx2, idx3);
-                mesh.addTriangle(idx1, idx3, idx4);
-                
-            } else {
-                int idx1 = x*N_Y+y;
-                int idx2 = x*N_Y+y+1;
-                
-                int idx3 = (x+1)*N_Y+y+1;
-                int idx4 = (x+1)*N_Y+y;
-                
-                mesh.addTriangle(idx1, idx2, idx3);
-                mesh.addTriangle(idx1, idx3, idx4);
-                
-                if(y == N_Y-2) {
-                    lastRow.push_back(idx2);
-                }
-            }
-            
-        }
-    }
-    int lastVertex = mesh.getNumVertices()-1;
-    
-    for(int i=0;i<lastRow.size()-1;i++) {
-        mesh.addTriangle(lastRow[i], lastRow[i+1], lastVertex);
-    }
-    mesh.addTriangle(lastRow[0],lastRow[lastRow.size()-1], lastVertex);
-    
-    ofxMeshUtils::calcNormals(mesh);
-    
-    moveVertices();
-
 }
 
 //--------------------------------------------------------------
@@ -194,81 +79,14 @@ void ofApp::draw(){
     
     //PHYLLOTAXIS
     if(showPhyllotaxis) {
-        ofPushMatrix();
-        ofRotate(n * rotateDeg);
-        
-        //Draw the Phyllotaxis spiral shape using a for loop, where 'n' increments by 5 every frame (in update). This makes the shape grow bigger.
-        for (int i = 0; i < n; i++) {
-            
-            //Create the Phyllotaxis pattern based on the mathematical formula
-            angle = i * angleDeg;
-            r = scaling * sqrt(i);
-            float x = r * cos(angle);
-            float y = r * sin(angle);
-            
-            //Set rainbow colours
-            ofColor color;
-            float hue = i + start;
-            hue = i % int(colorVal);
-            color.setHsb(hue, 255, 255);
-            ofSetColor(color);
-            
-            //Assign amplitudes of the audio sample using FFT and assign it to z values of each floret
-            //so that the floret moves in z axis along with the audio amplitudes
-            for(int j=0; j < bufferSize; j++) {
-                float z = myFFT.magnitudes[j] * intensity; //scale up the magnitudes by multiplying with a value to make the effect easier to see
-                
-                ofDrawEllipse(x, y, z, 3, 3);
-            }
+        for(int i=0; i < bufferSize; i++) {
+            phyllotaxis.draw(myFFT.magnitudes[i]);
         }
-        ofPopMatrix();
     }
     
     /* SUPERFORMULA */
-//    superformula.draw();
     if (showSuperformula) {
-        ofPushMatrix();
-        glShadeModel(GL_FLAT);
-        glProvokingVertex(GL_FIRST_VERTEX_CONVENTION);
-        
-        if(!drawPoints) {
-            ofDisableAlphaBlending();
-            mesh.setMode(OF_PRIMITIVE_TRIANGLES);
-            glEnable(GL_DEPTH_TEST);
-            ofEnableLighting();
-            light.enable();
-            mesh.draw();
-            light.disable();
-            ofDisableLighting();
-        } else {
-            mesh.setMode(OF_PRIMITIVE_POINTS);
-            glEnable(GL_POINT_SMOOTH);
-            glEnable(GL_PROGRAM_POINT_SIZE_ARB);
-            glPointSize(1.5f); //vertex size
-            mesh.clearColors();
-            
-            //TO DO Set rainbow colours to the vertices
-            int col = 0;
-            col++;
-            float hue = col % 255;
-            ofColor vertexColor;
-            
-            vertexColor.setHsb(hue, 255, 255);
-            ofSetColor(vertexColor); //vertex color
-            ofEnableAlphaBlending();
-            ofEnableBlendMode(OF_BLENDMODE_ALPHA);
-            
-            mesh.draw();
-        }
-
-        if(drawWire) {
-            mesh.setMode(OF_PRIMITIVE_TRIANGLES);
-            mesh.clearColors();
-            ofSetColor(255,255,255,100); //white
-            mesh.drawWireframe();
-        }
-        glDisable(GL_DEPTH_TEST);
-        ofPopMatrix();
+        superformula.draw();
     }
     
     easyCam.end(); //End EasyCam
@@ -307,6 +125,8 @@ void ofApp::keyPressed(int key){
         showPhyllotaxis = false; //2 to show Superformula shape
         showSuperformula = true;
     }
+    superformula.keyPressed(key); //Use Superformula key interactions
+
 //    if(key == '3') {
 //        showPhyllotaxis = false; //3 to show ??? shape
 //        showSuperformula = true;
@@ -319,13 +139,6 @@ void ofApp::keyPressed(int key){
     if(key == 'f')
         ofSetFullscreen(false); //'f' to exit fullscreen
     
-//    superformula.keyPressed(key);
-    
-    if(key == 'r') {
-        meshColor.set(ofRandom(255), ofRandom(255), ofRandom(255));
-        ambientColor.set(ofRandom(255), ofRandom(255), ofRandom(255));
-        diffuseColor.set(ofRandom(255), ofRandom(255), ofRandom(255));
-    }
 }
 
 //--------------------------------------------------------------
