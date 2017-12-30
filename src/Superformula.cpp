@@ -77,8 +77,7 @@ void Superformula::moveVertices(float fftMagnitudes) {
         ofVec3f vert = mesh.getVertex(i);
 
         //Move vertices in z-axis along with the audio amplitudes
-        //Adding a sinusoid function gives a nice wobbly effect
-        vert.z += sin(i) * fftMagnitudes;
+        vert.z += fftMagnitudes;
         
         mesh.setVertex(i, vert); //apply the transformation to each vertex of the mesh
     
