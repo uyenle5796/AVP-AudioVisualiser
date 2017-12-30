@@ -31,9 +31,9 @@ void Ring::setupGui() {
 void Ring::draw(float fftMagnitudes) {
     
     ofPushMatrix();
-    ofTranslate(0, -100);
-    ofRotateX(20); //tilt the shape a bin in x-axis
-    ofRotateY(ofGetFrameNum());
+    ofTranslate(0, -100); //move it a bit down
+    ofRotateX(20); //tilt the shape a bit in x-axis so it faces towards the user
+    ofRotateY(ofGetFrameNum()); //rotate the shape in Y-axis according to frame rate
     
     //Create the Circular shape by drawing 360 ellipses in 360 degrees
     for(int i=0; i < points.size(); i += spacing) {
@@ -43,8 +43,10 @@ void Ring::draw(float fftMagnitudes) {
         red = i % int(R);
         ofSetColor(red, G, B);
         
+        //The below code was adapted from 'Spiral circle' of https://github.com/soniaboller/soniaboller.github.io/tree/master/audible-visuals
+        
         float posx = sin(i) * (i / (i/radius));
-        float posy = fftMagnitudes * intensity;
+        float posy = fftMagnitudes * intensity; //move the points in y-axis along with the music, scaled with an intensity
         float posz = cos(i) * (i / (i/radius));
         
         ofDrawEllipse(posx, posy, posz, 5, 5);
