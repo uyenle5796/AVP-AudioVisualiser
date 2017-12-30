@@ -23,11 +23,18 @@ etc...
 <br>
 
 ### Credits and References:
-- [Phyllotaxis tutorial](https://www.youtube.com/watch?v=KWoJgHFYWxY)  
+- [Phyllotaxis tutorial](https://www.youtube.com/watch?v=KWoJgHFYWxY)
+- Sonia's [Audible visuals](https://soniaboller.github.io/audible-visuals/)
+- Kamend's [Superformula3d](https://github.com/kamend/Superformula3d)
+- Week 8 FeatureExtractor
 
 openFrameworks' Examples:
 - [guiExample](https://github.com/openframeworks/openFrameworks/tree/master/examples/gui/guiExample)
 - [colorExample](https://github.com/openframeworks/openFrameworks/tree/master/examples/graphics/colorExample)
+
+Sounds:
+- [Piano sample](https://freesound.org/people/Lemoncreme/sounds/186942/)
+- [Drum base sample](https://freesound.org/people/Snapper4298/sounds/156680/)
 
 ---
 Audio-Visual Coursework  
