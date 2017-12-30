@@ -6,7 +6,7 @@ Inspired by how sounds could be represented visually and how patterns found in n
 **Phyllotaxis:** a pattern inspired from the natural arrangement of florets of a sunflower. The algorithm was implemented based on Vogel's mathematical formula, where changing angle degrees: 137.3, 137.5 and 137.6 can produce different captivating patterns.
 	
 **Superformula:** a 3D implementation of superellipses - a mathematical formula that can recreate many complex shapes and curves that are found in nature by simply changing 6 parameters: a, b, m1, m2, n1, n2 and n3.  
-(Adapted from Kamend's [Superformula3D](https://github.com/kamend/Superformula3d)).
+(Code adapted from Kamend's [Superformula3D](https://github.com/kamend/Superformula3d)).
 
 **Disco ring:** a simple circular ring, where the points move in y-axis along with the audio, inspired from Sonia's Audible Visuals (link). Created by drawing many ellipses in 360 degrees using sin() and cos() functions, the ring provides a simple yet pleasing to the eyes design in contrast to the previous visualisers which are packed with colours and details.
 
@@ -30,12 +30,10 @@ Inspired by how sounds could be represented visually and how patterns found in n
 3. Copy 'ofxMaxim' folder in Maximilian/openFrameworks/ to your openFrameworks/addons/ folder.
 4. Open and compile the program in Xcode.
 
-<br>
-
 ### Credits:
 - [Phyllotaxis tutorial](https://www.youtube.com/watch?v=KWoJgHFYWxY)
-- Sonia's [Audible visuals](https://soniaboller.github.io/audible-visuals/)
-- Kamend's [Superformula3D](https://github.com/kamend/Superformula3d)
+- [Audible visuals](https://soniaboller.github.io/audible-visuals/)
+- [Superformula3D](https://github.com/kamend/Superformula3d)
 - Week 8 FeatureExtractor
 
 openFrameworks' Examples:
