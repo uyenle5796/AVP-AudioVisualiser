@@ -15,11 +15,9 @@
 void ofApp::setup(){
     
     ofBackground(0);
-    ofEnableSmoothing();
-    ofEnableAlphaBlending();
-    ofSetVerticalSync(true);
-    ofSetSmoothLighting(true);
-    ofSetFullscreen(true);
+    ofEnableSmoothing(); //Turns on smoothing to enhance graphics
+    ofSetSmoothLighting(true); //Turn smoothing for lighting
+    ofSetFullscreen(true); //run the program in fullscreen
     
     /* VISUALISERS SETUP */
     superformula = *new Superformula();
@@ -88,11 +86,13 @@ void ofApp::draw(){
         ofDrawBitmapString("SPACE: play/pause audio", 20, ofGetHeight()-10);
     }
     
-    //Start EasyCam - allows changing camera point of view
+    //Start EasyCam - a simple interactive camera, useful for viewing 3D scenes
+    //Allows us to change points of view and see the visualisers in different angles
     easyCam.begin();
     
     /* PHYLLOTAXIS */
     if(showPhyllotaxis) {
+        //Move each floret in z-axis along with the audio amplitudes
         for(int i=0; i < bufferSize; i++) {
             phyllotaxis.draw(myFFT.magnitudes[i]);
         }
@@ -104,6 +104,7 @@ void ofApp::draw(){
     
     /* RING */
     if (showRing) {
+        //Move each point in y-axis along with the audio amplitudes
         for(int i=0; i < bufferSize; i++) {
             ring.draw(myFFT.magnitudes[i]);
         }
@@ -114,17 +115,18 @@ void ofApp::draw(){
 
 //--------------------------------------------------------------
 void ofApp::audioOut (float *output, int bufferSize, int nChannels) {
-
+    
+    //Loop through the first 512 samples of the audio files (also known as the Nyquist rate)
     for (int i = 0; i < bufferSize; i++) {
         
-        if (myFFT.process(sampleOut)) {
-            myFFT.magsToDB(); //get the amplitude in Decibels
-        }
+        //Get amplitude of the audio samples in Decibels using Maximilian's FFT
+        if (myFFT.process(sampleOut))
+            myFFT.magsToDB();
         
         //Play the audio sample and store it to sampleOut
         if (playAudio) {
             if(playPianoSample)
-                sampleOut = pianoSample.play(); //replay the sample once it's ended
+                sampleOut = pianoSample.play(); //play() replays the sample once it's ended
             if (playDrumSample)
                 sampleOut = drumSample.play();
 
