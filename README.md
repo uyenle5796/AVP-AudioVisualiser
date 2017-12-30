@@ -3,7 +3,9 @@ Audio visualiser with Phyllotaxis and Archimedean Spiral using Maximilian and op
 
 <br>
 
-![screenshot](bin/data/screenshot.png)
+![screenshot](bin/data/screenshots/phyllotaxis.png)
+![screenshot](bin/data/screenshots/superformula.png)
+![screenshot](bin/data/screenshots/ring.png)
 
 ### Description
 etc...
