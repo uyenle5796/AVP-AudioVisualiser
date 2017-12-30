@@ -25,6 +25,7 @@ public:
     float n; //ordering number of the a floret, counting outward from the center
     float start = 0;
     
+    void setupGui();
     void draw(float magnitudes);
     void update();
 

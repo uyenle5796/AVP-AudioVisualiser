@@ -13,6 +13,7 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
+    
     ofBackground(0);
     ofEnableSmoothing();
     ofEnableAlphaBlending();
@@ -23,12 +24,22 @@ void ofApp::setup(){
     /* VISUALISERS SETUP */
     superformula = *new Superformula();
     phyllotaxis = *new Phyllotaxis();
+    archimedean = *new Archimedean();
 
     /* GUI SETUP */
     gui.setup();
-    gui.add(phyllotaxis.parameters); //Phyllotaxis GUI
-    gui.add(superformula.parameters); //Superformula GUI
     
+    //Phyllotaxis GUI
+    phyllotaxis.setupGui();
+    gui.add(phyllotaxis.parameters);
+    
+    //Superformula GUI
+    superformula.setupGui();
+    gui.add(superformula.parameters);
+    
+//    gui.setup(phyllotaxisParams);
+//    gui.add(superformula.parameters); //Superformula GUI
+//
     /* MAXIMILIAN SETUP */
     //Setup FFT
     myFFT.setup(fftSize, 512, 256);
@@ -117,27 +128,33 @@ void ofApp::audioOut (float *output, int bufferSize, int nChannels) {
 void ofApp::keyPressed(int key){
     
     // USER INTERACTIONS
+    
+    //1 to show Phyllotaxis shape
     if(key == '1') {
-        showPhyllotaxis = true; //1 to show Phyllotaxis shape
+        showPhyllotaxis = true;
         showSuperformula = false;
+        showArchimedianCircle = false;
     }
+    
+     //2 to show Superformula shape
     if(key == '2') {
-        showPhyllotaxis = false; //2 to show Superformula shape
         showSuperformula = true;
+        showPhyllotaxis = false;
+        showArchimedianCircle = false;
     }
     superformula.keyPressed(key); //Use Superformula key interactions
-
-//    if(key == '3') {
-//        showPhyllotaxis = false; //3 to show ??? shape
-//        showSuperformula = true;
-//    }
     
-    if(key == 'g')
-        displayGui = !displayGui; //1 to hide/show Gui
-    if(key == ' ')
-        playAudio = !playAudio; //SPACE to pause/play audio
-    if(key == 'f')
-        ofSetFullscreen(false); //'f' to exit fullscreen
+    //3 to show Archimedian spiral
+    if(key == '3') {
+        showArchimedianCircle = true;
+        showPhyllotaxis = false;
+        showSuperformula = false;
+    }
+    
+    //General interactions
+    if(key == 'g') displayGui = !displayGui; //'g' to hide/show Gui
+    if(key == ' ') playAudio = !playAudio; //SPACE to pause/play audio
+    if(key == 'f') ofSetFullscreen(false); //'f' to exit fullscreen
     
 }
 

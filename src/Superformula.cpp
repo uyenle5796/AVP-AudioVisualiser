@@ -9,18 +9,6 @@
 
 Superformula::Superformula() {
     
-    //Setup GUI
-    parameters.setName("Superformula");
-    parameters.add(a1value.set("a1value", 1,0,5));
-    parameters.add(a2value.set("a2value", 1,0,5));
-    parameters.add(n1value.set("n1value", 8,0,40));
-    parameters.add(n2value.set("n2value", 1,0,5));
-    parameters.add(n3value.set("n3value", 1,0,5));
-    parameters.add(n4value.set("n4value", 1,0,5));
-    parameters.add(numpoints.set("numpoints", 0.05,0.02,0.2));
-    parameters.add(drawWire.set("Draw Wireframe", false));
-    parameters.add(drawPoints.set("Draw Points", false));
-    
     //Setup directional, ambient and diffuse lights
     light.setDirectional();
     light.setOrientation(ofVec3f(0,60,60));
@@ -33,6 +21,21 @@ Superformula::Superformula() {
     
     mesh.enableColors();
     meshColor.set(ofRandom(255),ofRandom(255),ofRandom(255));
+}
+
+//--------------------------------------------------------------
+void Superformula::setupGui() {
+    
+    parameters.setName("Superformula");
+    parameters.add(a1value.set("a1value", 1,0,5));
+    parameters.add(a2value.set("a2value", 1,0,5));
+    parameters.add(n1value.set("n1value", 8,0,40));
+    parameters.add(n2value.set("n2value", 1,0,5));
+    parameters.add(n3value.set("n3value", 1,0,5));
+    parameters.add(n4value.set("n4value", 1,0,5));
+    parameters.add(numpoints.set("numpoints", 0.05,0.02,0.2));
+    parameters.add(drawWire.set("Draw Wireframe", false));
+    parameters.add(drawPoints.set("Draw Points", false));
 }
 
 //--------------------------------------------------------------

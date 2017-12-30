@@ -10,12 +10,17 @@
 //--------------------------------------------------------------
 Phyllotaxis::Phyllotaxis() {
     
+ }
+
+//--------------------------------------------------------------
+void Phyllotaxis::setupGui() {
+    
     parameters.setName("Phyllotaxis");
     parameters.add(angleDeg.set("Angle degree", 137.3, 137.0, 140.0));
     parameters.add(rotateDeg.set("Rotation degree", 0.3, 0.2, 0.5));
     parameters.add(scaling.set("Scaling", 8, 1, 10));
     parameters.add(colorVal.set("Colours", 300, 1, 360));
- }
+}
 
 
 //--------------------------------------------------------------
@@ -27,7 +32,7 @@ void Phyllotaxis::draw(float magnitudes) {
     //Draw the Phyllotaxis spiral shape using a for loop, where 'n' increments by 5 every frame (in update). This makes the shape grow bigger.
     for (int i = 0; i < n; i++) {
         
-        //Create the Phyllotaxis pattern based on the mathematical formula
+        //Create the Phyllotaxis pattern based on the mathematical formula: http://algorithmicbotany.org/papers/abop/abop-ch4.pdf
         angle = i * angleDeg;
         r = scaling * sqrt(i);
         float x = r * cos(angle);

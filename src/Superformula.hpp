@@ -38,6 +38,7 @@ public:
     Superformula();
     
     ofVec3f sf3d(float x, float y);
+    void setupGui();
     void draw();
     void update();
     void moveVertices(float fftMagnitudes);

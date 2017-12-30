@@ -5,8 +5,10 @@
 #include "maximilian.h"
 #include "ofxGui.h"
 #include "ofxMeshUtils.h"
-#include "Superformula.hpp"
 #include "Phyllotaxis.hpp"
+#include "Superformula.hpp"
+#include "Archimedean.hpp"
+
 
 using namespace std;
 
@@ -30,20 +32,20 @@ class ofApp : public ofBaseApp{
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
     
+    /* EASYCAM */
+    ofEasyCam easyCam;
+    
     /* GUI */
     ofxPanel gui;
     bool displayGui = true;
     bool showPhyllotaxis = true;
     bool showSuperformula = false;
-    //bool showArchimedianCircle = false;
-
-    /* EASYCAM */
-    ofEasyCam easyCam;
+    bool showArchimedianCircle = false;
     
     /* VISUALISERS */
     Phyllotaxis phyllotaxis;
     Superformula superformula;
-    
+    Archimedean archimedean;
     
     /* MAXIMILIAN */
     maxiFFT myFFT;
