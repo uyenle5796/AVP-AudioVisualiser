@@ -44,6 +44,9 @@ void ofApp::setup(){
     myFFT.setup(fftSize, 512, 256);
     
     // Load samples from files
+    // pianoSample from https://freesound.org/people/Lemoncreme/sounds/186942/
+    // drumSample from https://freesound.org/people/Snapper4298/sounds/156680/
+    
     pianoSample.load(ofToDataPath("/Users/uyenle/Desktop/AudioVisual/AVPCoursework_tle004/AudioViz_FinalProject/bin/data/lemoncreme_piano.wav"));
     drumSample.load(ofToDataPath("/Users/uyenle/Desktop/AudioVisual/AVPCoursework_tle004/AudioViz_FinalProject/bin/data/stezzer-102-break.wav"));
     
@@ -120,6 +123,7 @@ void ofApp::audioOut (float *output, int bufferSize, int nChannels) {
     for (int i = 0; i < bufferSize; i++) {
         
         //Get amplitude of the audio samples in Decibels using Maximilian's FFT
+        //Adapted from Advanced AV Week 8's FeatureExtractor
         if (myFFT.process(sampleOut))
             myFFT.magsToDB();
         
