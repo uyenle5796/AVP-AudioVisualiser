@@ -20,9 +20,10 @@ public:
     Ring();
     
     ofParameterGroup parameters;
-    ofParameter<float>  radius, spacing, color, intensity, scale;
+    ofParameter<float> radius, spacing, intensity;
+    ofParameter<float> R,G,B;
     
-    vector<float> particles;
+    vector<float> points;
 //    float scale = 10;
     float startColor; //a start value for creating rainbow color
     
