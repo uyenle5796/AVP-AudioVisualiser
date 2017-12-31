@@ -28,6 +28,13 @@ Inspired by how sounds could be represented visually and how patterns found in n
 2. Clone Maximilian.
 3. Copy 'ofxMaxim' folder in Maximilian/openFrameworks/ to your openFrameworks/addons/ folder.
 4. Open and compile the program in Xcode.
+##### GUI Instructions
+5. Press 1,2,3 to change visualisers
+6. Press 'R' to change Superformula colour
+7. Press 5,6 to change audio
+8. Press 'G' to show/hide GUI
+9. Press 'F' to exit fullscreen
+10. Press 'SPACE' to play/pause audio
 
 ### Credits:
 - [Phyllotaxis tutorial](https://www.youtube.com/watch?v=KWoJgHFYWxY)
