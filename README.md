@@ -1,4 +1,4 @@
-# Audio Visualiser
+# Audio Visualiser 🎶 🌈
 
 ### Description
 Inspired by how sounds could be represented visually and how patterns found in nature could be represented mathematically, this interactive audio visualisation aims to explore these two concepts. Written in C++, the program used [openFrameworks](http://openframeworks.cc/download/) to create the mesmerising graphics and [Maximilian](https://github.com/micknoise/Maximilian) music library to extract audio features from audio files using FFT. A interactive GUI is also provided to allow customisation of the shapes. Each visualiser animates in synchronisation with the audio’s magnitudes `myFFT.magnitudes[i]` which contains pitch, amplitude and timbre.
