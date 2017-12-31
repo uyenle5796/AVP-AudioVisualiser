@@ -28,7 +28,7 @@ Inspired by how sounds could be represented visually and how patterns found in n
 2. Clone Maximilian.
 3. Copy 'ofxMaxim' folder in Maximilian/openFrameworks/ to your openFrameworks/addons/ folder.
 4. Open and compile the program in Xcode.
-##### GUI Instructions
+GUI Instructions:
 5. Press 1,2,3 to change visualisers
 6. Press 'R' to change Superformula colour
 7. Press 5,6 to change audio
@@ -36,17 +36,18 @@ Inspired by how sounds could be represented visually and how patterns found in n
 9. Press 'F' to exit fullscreen
 10. Press 'SPACE' to play/pause audio
 
-### Credits:
-- [Phyllotaxis tutorial](https://www.youtube.com/watch?v=KWoJgHFYWxY)
-- [Audible visuals](https://soniaboller.github.io/audible-visuals/)
+### Credits
+- Youtube [Phyllotaxis tutorial](https://www.youtube.com/watch?v=KWoJgHFYWxY)
+- [Audible visuals](https://soniaboller.github.io/audible-visuals/) (Inspiration)
 - [Superformula3D](https://github.com/kamend/Superformula3d)
-- Week 8 FeatureExtractor
+- Week 8 Lab: FeatureExtractor
 
-openFrameworks' Examples:
+openFrameworks Examples:
 - [guiExample](https://github.com/openframeworks/openFrameworks/tree/master/examples/gui/guiExample)
 - [colorExample](https://github.com/openframeworks/openFrameworks/tree/master/examples/graphics/colorExample)
 
 Sounds:
+from [freesound.org](https://freesound.org)
 - [Piano sample](https://freesound.org/people/Lemoncreme/sounds/186942/)
 - [Drum base sample](https://freesound.org/people/Snapper4298/sounds/156680/)
 
