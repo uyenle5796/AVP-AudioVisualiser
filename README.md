@@ -1,12 +1,11 @@
 # Audio Visualiser
 
 ### Description
-Inspired by how sounds could be represented visually and how patterns found in nature could be represented mathematically, this interactive audio visualisation aims to explore these two concepts. Written in C++, the program used [openFrameworks](http://openframeworks.cc/download/) to create the mesmerising graphics and [Maximilian](https://github.com/micknoise/Maximilian) music library to extract audio features from audio files using FFT. A interactive GUI is also provided to allow customisation of the shapes.
+Inspired by how sounds could be represented visually and how patterns found in nature could be represented mathematically, this interactive audio visualisation aims to explore these two concepts. Written in C++, the program used [openFrameworks](http://openframeworks.cc/download/) to create the mesmerising graphics and [Maximilian](https://github.com/micknoise/Maximilian) music library to extract audio features from audio files using FFT. A interactive GUI is also provided to allow customisation of the shapes. Each visualiser animates in synchronisation with the audio’s magnitudes `myFFT.magnitudes[i]` which contains pitch, amplitude and timbre.
 
 **Phyllotaxis:** a pattern inspired from the natural arrangement of florets of a sunflower. The algorithm was implemented based on Vogel's mathematical formula, where changing angle degrees: 137.3, 137.5 and 137.6 can produce different captivating patterns.
 	
-**Superformula:** a 3D implementation of superellipses - a mathematical formula that can recreate many complex shapes and curves that are found in nature by simply changing 6 parameters: a, b, m1, m2, n1, n2 and n3.  
-(Code adapted from Kamend's [Superformula3D](https://github.com/kamend/Superformula3d)).
+**Superformula:** a 3D implementation of superellipses. Superformula is a mathematical formula that can produce many complex shapes and curves found in nature. Simply adjusting the 6 parameters: a, b, m1, m2, n1, n2 and n3 in the GUI to see how various interesting shapes can be made.
 
 **Disco ring:** a simple circular ring, where the points move in y-axis along with the audio, inspired from Sonia's Audible Visuals (link). Created by drawing many ellipses in 360 degrees using sin() and cos() functions, the ring provides a simple yet pleasing to the eyes design in contrast to the previous visualisers which are packed with colours and details.
 
